@@ -10,6 +10,7 @@
    // using System.Timers;
   
     using System.Diagnostics.PerformanceData;
+    using System.Timers;
 
     namespace ProcessMonitorApp
     {
@@ -73,7 +74,11 @@
                         InitializePerformanceCounters(process);
 
                         // Запускаем таймер для мониторинга CPU и памяти (каждые 2 секунды)
-                       monitoringTimer = new System.Timers.Timer(2000);
+                        private static void MonitorPerformance(object sender, ElapsedEventArgs e) {
+                            monitoringTimer = new System.Timers.Timer(2000);
+                            monitoringTimer.Elapsed += MonitorPerformance;
+                            monitoringTimer.AutoReset = true;
+                            monitoringTimer.Start(); }
 
                         // Мониторинг файловой активности
                         MonitorFileActivity(process);

@@ -41,11 +41,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp2", "ConsoleApp2\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Task6", "Task6", "{6DEC5EFE-55FA-4FA5-AF91-C9B68A31BD2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "finalversion", "finalversion\finalversion.csproj", "{29329446-F388-4F03-98F7-8D571AA21354}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "finalversion", "finalversion\finalversion.csproj", "{29329446-F388-4F03-98F7-8D571AA21354}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Task7", "Task7", "{066204BE-8E62-4287-AAD5-737C32CA6E85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "versfin", "versfin\versfin.csproj", "{395C1DA2-0AA0-4F4D-A21F-ABA6F287C3F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "versfin", "versfin\versfin.csproj", "{395C1DA2-0AA0-4F4D-A21F-ABA6F287C3F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSelection.Lib", "FileSelection.Lib\FileSelection.Lib.csproj", "{5D74D608-6F16-4562-A75A-DA97AD102A27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -167,6 +169,14 @@ Global
 		{395C1DA2-0AA0-4F4D-A21F-ABA6F287C3F1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{395C1DA2-0AA0-4F4D-A21F-ABA6F287C3F1}.Release|x64.ActiveCfg = Release|Any CPU
 		{395C1DA2-0AA0-4F4D-A21F-ABA6F287C3F1}.Release|x64.Build.0 = Release|Any CPU
+		{5D74D608-6F16-4562-A75A-DA97AD102A27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D74D608-6F16-4562-A75A-DA97AD102A27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D74D608-6F16-4562-A75A-DA97AD102A27}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5D74D608-6F16-4562-A75A-DA97AD102A27}.Debug|x64.Build.0 = Debug|Any CPU
+		{5D74D608-6F16-4562-A75A-DA97AD102A27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D74D608-6F16-4562-A75A-DA97AD102A27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D74D608-6F16-4562-A75A-DA97AD102A27}.Release|x64.ActiveCfg = Release|Any CPU
+		{5D74D608-6F16-4562-A75A-DA97AD102A27}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -186,6 +196,7 @@ Global
 		{3852ABBA-21C4-4194-8E35-393A449C755A} = {4C54C730-A90F-4CF2-932E-EAD8C16A6DC8}
 		{29329446-F388-4F03-98F7-8D571AA21354} = {6DEC5EFE-55FA-4FA5-AF91-C9B68A31BD2D}
 		{395C1DA2-0AA0-4F4D-A21F-ABA6F287C3F1} = {066204BE-8E62-4287-AAD5-737C32CA6E85}
+		{5D74D608-6F16-4562-A75A-DA97AD102A27} = {EAAF9578-69AB-4349-AFBD-C469169CF86C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0EB6DCCE-48A1-4965-98B0-DE5B0C2B92C1}
