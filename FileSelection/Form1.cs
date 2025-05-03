@@ -30,7 +30,7 @@ namespace FileSelection
 
         
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonChoiceFile_Click(object sender, EventArgs e)
         {
             if (openFileDialogTask.ShowDialog() == DialogResult.OK)
             {
@@ -135,6 +135,13 @@ namespace FileSelection
             //startInfo.ErrorDialog = true;
             //process.StartInfo = startInfo;
             //process.Start();
+        }
+
+       
+
+        private void checkedListBoxfunction_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

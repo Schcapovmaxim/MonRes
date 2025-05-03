@@ -32,10 +32,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.openFileDialogTask = new System.Windows.Forms.OpenFileDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.button1 = new System.Windows.Forms.Button();
+            this.buttonChoiceFile = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.lblProcessInfo = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
+            this.checkedListBoxfunction = new System.Windows.Forms.CheckedListBox();
             this.SuspendLayout();
             // 
             // openFileDialogTask
@@ -49,17 +50,17 @@
             this.toolTip1.ToolTipTitle = "Подсказка";
             this.toolTip1.Popup += new System.Windows.Forms.PopupEventHandler(this.toolTip1_Popup);
             // 
-            // button1
+            // buttonChoiceFile
             // 
-            this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button1.Image = ((System.Drawing.Image)(resources.GetObject("button1.Image")));
-            this.button1.Location = new System.Drawing.Point(13, 83);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(91, 61);
-            this.button1.TabIndex = 0;
-            this.toolTip1.SetToolTip(this.button1, "выберете файл");
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.buttonChoiceFile.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.buttonChoiceFile.Image = ((System.Drawing.Image)(resources.GetObject("buttonChoiceFile.Image")));
+            this.buttonChoiceFile.Location = new System.Drawing.Point(13, 83);
+            this.buttonChoiceFile.Name = "buttonChoiceFile";
+            this.buttonChoiceFile.Size = new System.Drawing.Size(91, 61);
+            this.buttonChoiceFile.TabIndex = 0;
+            this.toolTip1.SetToolTip(this.buttonChoiceFile, "выберете файл");
+            this.buttonChoiceFile.UseVisualStyleBackColor = true;
+            this.buttonChoiceFile.Click += new System.EventHandler(this.buttonChoiceFile_Click);
             // 
             // button2
             // 
@@ -89,18 +90,31 @@
             this.lblStatus.Size = new System.Drawing.Size(0, 16);
             this.lblStatus.TabIndex = 3;
             // 
+            // checkedListBoxfunction
+            // 
+            this.checkedListBoxfunction.FormattingEnabled = true;
+            this.checkedListBoxfunction.Items.AddRange(new object[] {
+            "Сетевая активность",
+            "Файловая активность",
+            "Процессы"});
+            this.checkedListBoxfunction.Location = new System.Drawing.Point(491, 94);
+            this.checkedListBoxfunction.Name = "checkedListBoxfunction";
+            this.checkedListBoxfunction.Size = new System.Drawing.Size(207, 89);
+            this.checkedListBoxfunction.TabIndex = 5;
+            this.checkedListBoxfunction.SelectedIndexChanged += new System.EventHandler(this.checkedListBoxfunction_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.checkedListBoxfunction);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.lblProcessInfo);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.buttonChoiceFile);
             this.Name = "Form1";
             this.Text = "FileSelection";
-           
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -110,10 +124,11 @@
 
         private System.Windows.Forms.OpenFileDialog openFileDialogTask;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonChoiceFile;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label lblProcessInfo;
         private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.CheckedListBox checkedListBoxfunction;
     }
 }
 
