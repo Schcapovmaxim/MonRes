@@ -96,7 +96,8 @@
             this.checkedListBoxfunction.Items.AddRange(new object[] {
             "Сетевая активность",
             "Файловая активность",
-            "Процессы"});
+            "Процессы",
+            "Нагрузка"});
             this.checkedListBoxfunction.Location = new System.Drawing.Point(491, 94);
             this.checkedListBoxfunction.Name = "checkedListBoxfunction";
             this.checkedListBoxfunction.Size = new System.Drawing.Size(207, 89);
