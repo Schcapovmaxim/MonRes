@@ -98,7 +98,7 @@
             "Файловая активность",
             "Процессы",
             "Нагрузка"});
-            this.checkedListBoxfunction.Location = new System.Drawing.Point(491, 94);
+            this.checkedListBoxfunction.Location = new System.Drawing.Point(13, 250);
             this.checkedListBoxfunction.Name = "checkedListBoxfunction";
             this.checkedListBoxfunction.Size = new System.Drawing.Size(207, 89);
             this.checkedListBoxfunction.TabIndex = 5;
@@ -114,9 +114,10 @@
             this.Controls.Add(this.lblProcessInfo);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.buttonChoiceFile);
+            this.ForeColor = System.Drawing.Color.Transparent;
             this.Name = "Form1";
-            this.Text = "FileSelection";
-           
+            this.Text = "СМЕРШ";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

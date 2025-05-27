@@ -42,8 +42,8 @@ namespace FileSelection
                 Multiline = true,
                 ScrollBars = ScrollBars.Vertical,
                 ReadOnly = true,
-                Location = new Point(491, 200),
-                Size = new Size(280, 200),
+                Location = new Point(200, 200),
+                Size = new Size(400, 400),
                 Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
             };
             this.Controls.Add(_monitorTextBox);
@@ -280,5 +280,10 @@ namespace FileSelection
         private void button2_Click(object sender, EventArgs e) { }
         private void checkedListBoxfunction_SelectedIndexChanged(object sender, EventArgs e) { }
         private void textBox1_TextChanged(object sender, EventArgs e) { }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
