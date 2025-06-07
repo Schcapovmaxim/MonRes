@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
-namespace FileSelection
+namespace SMERH
 {
     internal static class Program
     {
@@ -17,7 +17,7 @@ namespace FileSelection
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new MainWindow_SMA());
         }
     }
 }

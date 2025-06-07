@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FileSelection.Properties
+namespace SMERH.Properties
 {
 
 
