@@ -41,7 +41,12 @@
             this.ButtonStartTimer_SMA = new MetroFramework.Controls.MetroButton();
             this.MonitoringDurationNumeric_SMA = new System.Windows.Forms.NumericUpDown();
             this.TimeRemainingLabel_SMA = new MetroFramework.Controls.MetroLabel();
+            this.numericUpDownInterval_SMA = new System.Windows.Forms.NumericUpDown();
+            this.metroTextBox_SMA = new MetroFramework.Controls.MetroTextBox();
+            this.metroTextBoxMetric_SMA = new MetroFramework.Controls.MetroTextBox();
+            this.EmergencyStopButton_SMA = new MetroFramework.Controls.MetroButton();
             ((System.ComponentModel.ISupportInitialize)(this.MonitoringDurationNumeric_SMA)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInterval_SMA)).BeginInit();
             this.SuspendLayout();
             // 
             // openFileDialogTask
@@ -154,6 +159,11 @@
             // 
             // MonitoringDurationNumeric_SMA
             // 
+            this.MonitoringDurationNumeric_SMA.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
             this.MonitoringDurationNumeric_SMA.Location = new System.Drawing.Point(226, 181);
             this.MonitoringDurationNumeric_SMA.Maximum = new decimal(new int[] {
             3600,
@@ -185,11 +195,126 @@
             this.TimeRemainingLabel_SMA.Text = "Таймер не активирован";
             this.TimeRemainingLabel_SMA.UseCustomForeColor = true;
             // 
+            // numericUpDownInterval_SMA
+            // 
+            this.numericUpDownInterval_SMA.Increment = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.numericUpDownInterval_SMA.Location = new System.Drawing.Point(226, 122);
+            this.numericUpDownInterval_SMA.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.numericUpDownInterval_SMA.Minimum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numericUpDownInterval_SMA.Name = "numericUpDownInterval_SMA";
+            this.numericUpDownInterval_SMA.Size = new System.Drawing.Size(120, 22);
+            this.numericUpDownInterval_SMA.TabIndex = 10;
+            this.toolTip1.SetToolTip(this.numericUpDownInterval_SMA, "Интервал таймера в миллисекундах");
+            this.numericUpDownInterval_SMA.Value = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            // 
+            // metroTextBox_SMA
+            // 
+            // 
+            // 
+            // 
+            this.metroTextBox_SMA.CustomButton.Image = null;
+            this.metroTextBox_SMA.CustomButton.Location = new System.Drawing.Point(131, 1);
+            this.metroTextBox_SMA.CustomButton.Name = "";
+            this.metroTextBox_SMA.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this.metroTextBox_SMA.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.metroTextBox_SMA.CustomButton.TabIndex = 1;
+            this.metroTextBox_SMA.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.metroTextBox_SMA.CustomButton.UseSelectable = true;
+            this.metroTextBox_SMA.CustomButton.Visible = false;
+            this.metroTextBox_SMA.Lines = new string[] {
+        "Интервал мониторинга"};
+            this.metroTextBox_SMA.Location = new System.Drawing.Point(226, 72);
+            this.metroTextBox_SMA.MaxLength = 32767;
+            this.metroTextBox_SMA.Name = "metroTextBox_SMA";
+            this.metroTextBox_SMA.PasswordChar = '\0';
+            this.metroTextBox_SMA.ReadOnly = true;
+            this.metroTextBox_SMA.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.metroTextBox_SMA.SelectedText = "";
+            this.metroTextBox_SMA.SelectionLength = 0;
+            this.metroTextBox_SMA.SelectionStart = 0;
+            this.metroTextBox_SMA.ShortcutsEnabled = true;
+            this.metroTextBox_SMA.Size = new System.Drawing.Size(153, 23);
+            this.metroTextBox_SMA.TabIndex = 11;
+            this.metroTextBox_SMA.Text = "Интервал мониторинга";
+            this.metroTextBox_SMA.UseSelectable = true;
+            this.metroTextBox_SMA.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.metroTextBox_SMA.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            // 
+            // metroTextBoxMetric_SMA
+            // 
+            // 
+            // 
+            // 
+            this.metroTextBoxMetric_SMA.CustomButton.Image = null;
+            this.metroTextBoxMetric_SMA.CustomButton.Location = new System.Drawing.Point(53, 1);
+            this.metroTextBoxMetric_SMA.CustomButton.Name = "";
+            this.metroTextBoxMetric_SMA.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this.metroTextBoxMetric_SMA.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.metroTextBoxMetric_SMA.CustomButton.TabIndex = 1;
+            this.metroTextBoxMetric_SMA.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.metroTextBoxMetric_SMA.CustomButton.UseSelectable = true;
+            this.metroTextBoxMetric_SMA.CustomButton.Visible = false;
+            this.metroTextBoxMetric_SMA.Lines = new string[] {
+        "мс"};
+            this.metroTextBoxMetric_SMA.Location = new System.Drawing.Point(365, 122);
+            this.metroTextBoxMetric_SMA.MaxLength = 32767;
+            this.metroTextBoxMetric_SMA.Multiline = true;
+            this.metroTextBoxMetric_SMA.Name = "metroTextBoxMetric_SMA";
+            this.metroTextBoxMetric_SMA.PasswordChar = '\0';
+            this.metroTextBoxMetric_SMA.ReadOnly = true;
+            this.metroTextBoxMetric_SMA.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.metroTextBoxMetric_SMA.SelectedText = "";
+            this.metroTextBoxMetric_SMA.SelectionLength = 0;
+            this.metroTextBoxMetric_SMA.SelectionStart = 0;
+            this.metroTextBoxMetric_SMA.ShortcutsEnabled = true;
+            this.metroTextBoxMetric_SMA.Size = new System.Drawing.Size(41, 22);
+            this.metroTextBoxMetric_SMA.TabIndex = 12;
+            this.metroTextBoxMetric_SMA.Text = "мс";
+            this.metroTextBoxMetric_SMA.UseSelectable = true;
+            this.metroTextBoxMetric_SMA.UseStyleColors = true;
+            this.metroTextBoxMetric_SMA.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.metroTextBoxMetric_SMA.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            // 
+            // EmergencyStopButton_SMA
+            // 
+            this.EmergencyStopButton_SMA.Cursor = System.Windows.Forms.Cursors.Default;
+            this.EmergencyStopButton_SMA.ForeColor = System.Drawing.Color.Red;
+            this.EmergencyStopButton_SMA.Location = new System.Drawing.Point(702, 34);
+            this.EmergencyStopButton_SMA.Name = "EmergencyStopButton_SMA";
+            this.EmergencyStopButton_SMA.Size = new System.Drawing.Size(75, 61);
+            this.EmergencyStopButton_SMA.TabIndex = 13;
+            this.EmergencyStopButton_SMA.Text = "СТОП";
+            this.EmergencyStopButton_SMA.UseCustomBackColor = true;
+            this.EmergencyStopButton_SMA.UseCustomForeColor = true;
+            this.EmergencyStopButton_SMA.UseSelectable = true;
+            this.EmergencyStopButton_SMA.UseStyleColors = true;
+            this.EmergencyStopButton_SMA.Click += new System.EventHandler(this.EmergencyStopButton_SMA_Click);
+            // 
             // MainWindow_SMA
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.EmergencyStopButton_SMA);
+            this.Controls.Add(this.metroTextBoxMetric_SMA);
+            this.Controls.Add(this.metroTextBox_SMA);
+            this.Controls.Add(this.numericUpDownInterval_SMA);
             this.Controls.Add(this.TimeRemainingLabel_SMA);
             this.Controls.Add(this.MonitoringDurationNumeric_SMA);
             this.Controls.Add(this.ButtonStartTimer_SMA);
@@ -203,6 +328,7 @@
             this.Name = "MainWindow_SMA";
             this.Text = "СМЕРШ";
             ((System.ComponentModel.ISupportInitialize)(this.MonitoringDurationNumeric_SMA)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInterval_SMA)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -221,6 +347,10 @@
         private MetroFramework.Controls.MetroButton ButtonStartTimer_SMA;
         private System.Windows.Forms.NumericUpDown MonitoringDurationNumeric_SMA;
         private MetroFramework.Controls.MetroLabel TimeRemainingLabel_SMA;
+        private System.Windows.Forms.NumericUpDown numericUpDownInterval_SMA;
+        private MetroFramework.Controls.MetroTextBox metroTextBox_SMA;
+        private MetroFramework.Controls.MetroTextBox metroTextBoxMetric_SMA;
+        private MetroFramework.Controls.MetroButton EmergencyStopButton_SMA;
     }
 }
 
