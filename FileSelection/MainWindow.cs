@@ -67,6 +67,7 @@ using MetroFramework.Forms; // Стилизация интерфейса с кр
 using Microsoft.VisualBasic.Devices; // Вспомогатлеьные классы данные о системе (оперативная память)
 using System.Management; // Запросы к системной информации (процессы, диски)
 
+
 namespace SMERH // Пространство имен служащее для логической группировки связанных классов всего приложения в данном случае
 {
     public partial class MainWindow_SMA : MetroForm // Объявление класса, окно приложения
@@ -167,86 +168,86 @@ namespace SMERH // Пространство имен служащее для л�
             }
         }
 
-        private void ShowNetworkInfo()
+        private void ShowNetworkInfo() // Метод для вывода сетевой активности
         {
-            OutPutTextBox_BVP.AppendText("=== Сетевая активность процесса ===\r\n");
+            OutPutTextBox_BVP.AppendText("=== Сетевая активность процесса ===\r\n"); // Заголовок для разделения логов
 
             try
             {
-                OutPutTextBox_BVP.AppendText($"Используемые порты:\n");
+                OutPutTextBox_BVP.AppendText($"Используемые порты:\n"); // Заголовок для используемых портов
 
                 var connections = IPGlobalProperties.GetIPGlobalProperties()
-                    .GetActiveTcpConnections()
-                    .Where(c => c.LocalEndPoint.Port == _trackedProcess.Id);
+                   .GetActiveTcpConnections()
+                   .Where(c => c.LocalEndPoint.Port == _trackedProcess.Id); // Получение портов по процессу
 
                 foreach (var conn in connections.Take(5))
                 {
-                    OutPutTextBox_BVP.AppendText($"{conn.LocalEndPoint} -> {conn.RemoteEndPoint} ({conn.State})\n");
+                    OutPutTextBox_BVP.AppendText($"{conn.LocalEndPoint} -> {conn.RemoteEndPoint} ({conn.State})\n"); // Вывод портов
                 }
             }
             catch (Exception ex)
             {
-                OutPutTextBox_BVP.AppendText($"Ошибка: {ex.Message}\r\n");
+                OutPutTextBox_BVP.AppendText($"Ошибка: {ex.Message}\r\n"); // Обработка ошибок
             }
         }
 
-        private void ShowFileActivity()
+        private void ShowFileActivity() // Метод для вывода файловой активности
         {
-            OutPutTextBox_BVP.AppendText("=== Файловая активность процесса ===\r\n");
+            OutPutTextBox_BVP.AppendText("=== Файловая активность процесса ===\r\n"); // Заголовок для разделения логов
 
             try
             {
-                float readSpeed = _ioReadCounter.NextValue() / 1024;
-                float writeSpeed = _ioWriteCounter.NextValue() / 1024;
+                float readSpeed = _ioReadCounter.NextValue() / 1024; // Скорость чтения
+                float writeSpeed = _ioWriteCounter.NextValue() / 1024;// Скорость записи
 
-                OutPutTextBox_BVP.AppendText($"Скорость чтения: {readSpeed:F1} KB/s\n");
-                OutPutTextBox_BVP.AppendText($"Скорость записи: {writeSpeed:F1} KB/s\n\n");
+                OutPutTextBox_BVP.AppendText($"Скорость чтения: {readSpeed:F1} KB/s\n");  // Вывод скорости чтения
+                OutPutTextBox_BVP.AppendText($"Скорость записи: {writeSpeed:F1} KB/s\n\n"); // Вывод скорости записи
 
-                OutPutTextBox_BVP.AppendText("Загруженные модули:\n");
-                foreach (ProcessModule module in _trackedProcess.Modules.Cast<ProcessModule>().Take(5))
+                OutPutTextBox_BVP.AppendText("Загруженные модули:\n"); // Заголовок для загруженных модулей
+                foreach (ProcessModule module in _trackedProcess.Modules.Cast<ProcessModule>().Take(5)) // Получение модулей
                 {
-                    OutPutTextBox_BVP.AppendText($"{module.FileName}\n");
+                    OutPutTextBox_BVP.AppendText($"{module.FileName}\n"); // Вывод модулей
                 }
             }
             catch (Exception ex)
             {
-                OutPutTextBox_BVP.AppendText($"Ошибка: {ex.Message}\r\n");
+                OutPutTextBox_BVP.AppendText($"Ошибка: {ex.Message}\r\n"); // Обработка ошибок
             }
         }
 
-        private void ShowProcessesInfo()
+        private void ShowProcessesInfo() // Метод для вывода базовой информации о процессе
         {
-            OutPutTextBox_BVP.AppendText("=== Информация о процессе ===\r\n");
+            OutPutTextBox_BVP.AppendText("=== Информация о процессе ===\r\n"); // Заголовок для разделения логов
 
             try
             {
-                OutPutTextBox_BVP.AppendText($"Имя: {_trackedProcess.ProcessName}\n");
-                OutPutTextBox_BVP.AppendText($"ID: {_trackedProcess.Id}\n");
-                OutPutTextBox_BVP.AppendText($"Время запуска: {_trackedProcess.StartTime}\n");
-                OutPutTextBox_BVP.AppendText($"Потоки: {_trackedProcess.Threads.Count}\n");
-                OutPutTextBox_BVP.AppendText($"Дескрипторы: {_trackedProcess.HandleCount}\n");
+                OutPutTextBox_BVP.AppendText($"Имя: {_trackedProcess.ProcessName}\n"); // Имя
+                OutPutTextBox_BVP.AppendText($"ID: {_trackedProcess.Id}\n"); // Id процесса
+                OutPutTextBox_BVP.AppendText($"Время запуска: {_trackedProcess.StartTime}\n");  // Время запуска
+                OutPutTextBox_BVP.AppendText($"Потоки: {_trackedProcess.Threads.Count}\n"); // Потоки
+                OutPutTextBox_BVP.AppendText($"Дескрипторы: {_trackedProcess.HandleCount}\n"); // Дескрипторы
             }
             catch (Exception ex)
             {
-                OutPutTextBox_BVP.AppendText($"Ошибка: {ex.Message}\r\n");
+                OutPutTextBox_BVP.AppendText($"Ошибка: {ex.Message}\r\n"); // Обработка ошибок
             }
         }
 
-        private void ShowSystemLoad()
+        private void ShowSystemLoad() // Метод для сбора логов связанных с нагрузкой процесса
         {
-            OutPutTextBox_BVP.AppendText("=== Нагрузка процесса ===\r\n");
+            OutPutTextBox_BVP.AppendText("=== Нагрузка процесса ===\r\n"); // Заголовок для разделения логов
 
             try
             {
-                float cpuUsage = _cpuCounter.NextValue() / Environment.ProcessorCount;
-                float ramUsageMB = _ramCounter.NextValue() / (1024 * 1024);
+                float cpuUsage = _cpuCounter.NextValue() / Environment.ProcessorCount; // Средняя нагрузка на ядро
+                float ramUsageMB = _ramCounter.NextValue() / (1024 * 1024); // Использование оперативной памяти в байтах
 
-                OutPutTextBox_BVP.AppendText($"CPU: {cpuUsage:F1}%\n");
-                OutPutTextBox_BVP.AppendText($"RAM: {ramUsageMB:F1} MB\n");
+                OutPutTextBox_BVP.AppendText($"CPU: {cpuUsage:F1}%\n"); // Вывод данных о CPU
+                OutPutTextBox_BVP.AppendText($"RAM: {ramUsageMB:F1} MB\n"); // Вывод данных о RAM 
             }
             catch (Exception ex)
             {
-                OutPutTextBox_BVP.AppendText($"Ошибка: {ex.Message}\r\n");
+                OutPutTextBox_BVP.AppendText($"Ошибка: {ex.Message}\r\n"); // Обработка ошибок
             }
         }
 
@@ -329,8 +330,8 @@ namespace SMERH // Пространство имен служащее для л�
             {
                 return; // Останавливаем метод ButtonStartTimer_SMA_Click(), если чекбоксы не стоят  
             }
+            UpdateMonitoring();
 
-            
 
             _remainingSeconds = (int)MonitoringDurationNumeric_SMA.Value; // Автоматическая установка таймера мониторинга
             _stopMonitoringTimer.Start(); // Запуска таймера
