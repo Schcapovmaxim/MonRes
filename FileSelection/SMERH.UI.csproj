@@ -138,5 +138,15 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SMERH.Core\SMERH.Core.csproj">
+      <Project>{10d84285-c9e5-45de-ba5d-3688194e0e88}</Project>
+      <Name>SMERH.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SMERH.Data\SMERH.Data.csproj">
+      <Project>{74a0031c-e39b-4f66-b7bf-8a85100569c6}</Project>
+      <Name>SMERH.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

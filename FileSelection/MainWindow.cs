@@ -66,7 +66,8 @@ using System.Windows.Forms; // Основное контролы(form,button,Tex
 using MetroFramework.Forms; // Стилизация интерфейса с красивыми плоскими формами
 using Microsoft.VisualBasic.Devices; // Вспомогатлеьные классы данные о системе (оперативная память)
 using System.Management; // Запросы к системной информации (процессы, диски)
-
+using SMERH.Core;
+using SMERH.Data;
 
 namespace SMERH // Пространство имен служащее для логической группировки связанных классов всего приложения в данном случае
 {
