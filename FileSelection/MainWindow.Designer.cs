@@ -105,7 +105,7 @@
             this.numericUpDownInterval_SMA.TabIndex = 10;
             this.toolTip1.SetToolTip(this.numericUpDownInterval_SMA, "Интервал таймера в миллисекундах");
             this.numericUpDownInterval_SMA.Value = new decimal(new int[] {
-            1000,
+            5000,
             0,
             0,
             0});
