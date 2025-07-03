@@ -64,7 +64,7 @@
             this.buttonChoiceFile.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonChoiceFile.Image = ((System.Drawing.Image)(resources.GetObject("buttonChoiceFile.Image")));
             this.buttonChoiceFile.Location = new System.Drawing.Point(10, 67);
-            this.buttonChoiceFile.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonChoiceFile.Margin = new System.Windows.Forms.Padding(2);
             this.buttonChoiceFile.Name = "buttonChoiceFile";
             this.buttonChoiceFile.Size = new System.Drawing.Size(68, 50);
             this.buttonChoiceFile.TabIndex = 0;
@@ -77,7 +77,7 @@
             this.buttonOpenDataMon_SMA.Enabled = false;
             this.buttonOpenDataMon_SMA.Image = ((System.Drawing.Image)(resources.GetObject("buttonOpenDataMon_SMA.Image")));
             this.buttonOpenDataMon_SMA.Location = new System.Drawing.Point(82, 67);
-            this.buttonOpenDataMon_SMA.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonOpenDataMon_SMA.Margin = new System.Windows.Forms.Padding(2);
             this.buttonOpenDataMon_SMA.Name = "buttonOpenDataMon_SMA";
             this.buttonOpenDataMon_SMA.Size = new System.Drawing.Size(68, 50);
             this.buttonOpenDataMon_SMA.TabIndex = 1;
@@ -92,7 +92,7 @@
             0,
             0});
             this.numericUpDownInterval_SMA.Location = new System.Drawing.Point(170, 99);
-            this.numericUpDownInterval_SMA.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.numericUpDownInterval_SMA.Margin = new System.Windows.Forms.Padding(2);
             this.numericUpDownInterval_SMA.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -141,7 +141,7 @@
             "Процессы",
             "Нагрузка"});
             this.checkedListBoxfunction.Location = new System.Drawing.Point(10, 203);
-            this.checkedListBoxfunction.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.checkedListBoxfunction.Margin = new System.Windows.Forms.Padding(2);
             this.checkedListBoxfunction.Name = "checkedListBoxfunction";
             this.checkedListBoxfunction.Size = new System.Drawing.Size(155, 60);
             this.checkedListBoxfunction.TabIndex = 5;
@@ -153,10 +153,10 @@
             // 
             // 
             this.OutPutTextBox_BVP.CustomButton.Image = null;
-            this.OutPutTextBox_BVP.CustomButton.Location = new System.Drawing.Point(183, 2);
-            this.OutPutTextBox_BVP.CustomButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.OutPutTextBox_BVP.CustomButton.Location = new System.Drawing.Point(244, 2);
+            this.OutPutTextBox_BVP.CustomButton.Margin = new System.Windows.Forms.Padding(2);
             this.OutPutTextBox_BVP.CustomButton.Name = "";
-            this.OutPutTextBox_BVP.CustomButton.Size = new System.Drawing.Size(136, 147);
+            this.OutPutTextBox_BVP.CustomButton.Size = new System.Drawing.Size(181, 181);
             this.OutPutTextBox_BVP.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
             this.OutPutTextBox_BVP.CustomButton.TabIndex = 1;
             this.OutPutTextBox_BVP.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
@@ -165,7 +165,7 @@
             this.OutPutTextBox_BVP.Lines = new string[] {
         "Выберите прикладное программмное обеспечение для тестирования"};
             this.OutPutTextBox_BVP.Location = new System.Drawing.Point(170, 180);
-            this.OutPutTextBox_BVP.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.OutPutTextBox_BVP.Margin = new System.Windows.Forms.Padding(2);
             this.OutPutTextBox_BVP.MaxLength = 32767;
             this.OutPutTextBox_BVP.Multiline = true;
             this.OutPutTextBox_BVP.Name = "OutPutTextBox_BVP";
@@ -186,7 +186,7 @@
             // ButtonStartTimer_SMA
             // 
             this.ButtonStartTimer_SMA.Location = new System.Drawing.Point(274, 150);
-            this.ButtonStartTimer_SMA.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ButtonStartTimer_SMA.Margin = new System.Windows.Forms.Padding(2);
             this.ButtonStartTimer_SMA.Name = "ButtonStartTimer_SMA";
             this.ButtonStartTimer_SMA.Size = new System.Drawing.Size(88, 15);
             this.ButtonStartTimer_SMA.TabIndex = 7;
@@ -202,7 +202,7 @@
             0,
             0});
             this.MonitoringDurationNumeric_SMA.Location = new System.Drawing.Point(170, 147);
-            this.MonitoringDurationNumeric_SMA.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.MonitoringDurationNumeric_SMA.Margin = new System.Windows.Forms.Padding(2);
             this.MonitoringDurationNumeric_SMA.Maximum = new decimal(new int[] {
             3600,
             0,
@@ -240,10 +240,10 @@
             // 
             // 
             this.metroTextBox_SMA.CustomButton.Image = null;
-            this.metroTextBox_SMA.CustomButton.Location = new System.Drawing.Point(87, 2);
-            this.metroTextBox_SMA.CustomButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.metroTextBox_SMA.CustomButton.Location = new System.Drawing.Point(116, 2);
+            this.metroTextBox_SMA.CustomButton.Margin = new System.Windows.Forms.Padding(2);
             this.metroTextBox_SMA.CustomButton.Name = "";
-            this.metroTextBox_SMA.CustomButton.Size = new System.Drawing.Size(16, 17);
+            this.metroTextBox_SMA.CustomButton.Size = new System.Drawing.Size(21, 21);
             this.metroTextBox_SMA.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
             this.metroTextBox_SMA.CustomButton.TabIndex = 1;
             this.metroTextBox_SMA.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
@@ -252,7 +252,7 @@
             this.metroTextBox_SMA.Lines = new string[] {
         "Интервал мониторинга"};
             this.metroTextBox_SMA.Location = new System.Drawing.Point(170, 67);
-            this.metroTextBox_SMA.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.metroTextBox_SMA.Margin = new System.Windows.Forms.Padding(2);
             this.metroTextBox_SMA.MaxLength = 32767;
             this.metroTextBox_SMA.Multiline = true;
             this.metroTextBox_SMA.Name = "metroTextBox_SMA";
@@ -276,10 +276,10 @@
             // 
             // 
             this.metroTextBoxMetric_SMA.CustomButton.Image = null;
-            this.metroTextBoxMetric_SMA.CustomButton.Location = new System.Drawing.Point(11, 2);
-            this.metroTextBoxMetric_SMA.CustomButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.metroTextBoxMetric_SMA.CustomButton.Location = new System.Drawing.Point(15, 2);
+            this.metroTextBoxMetric_SMA.CustomButton.Margin = new System.Windows.Forms.Padding(2);
             this.metroTextBoxMetric_SMA.CustomButton.Name = "";
-            this.metroTextBoxMetric_SMA.CustomButton.Size = new System.Drawing.Size(10, 11);
+            this.metroTextBoxMetric_SMA.CustomButton.Size = new System.Drawing.Size(13, 13);
             this.metroTextBoxMetric_SMA.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
             this.metroTextBoxMetric_SMA.CustomButton.TabIndex = 1;
             this.metroTextBoxMetric_SMA.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
@@ -288,7 +288,7 @@
             this.metroTextBoxMetric_SMA.Lines = new string[] {
         "мс"};
             this.metroTextBoxMetric_SMA.Location = new System.Drawing.Point(274, 99);
-            this.metroTextBoxMetric_SMA.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.metroTextBoxMetric_SMA.Margin = new System.Windows.Forms.Padding(2);
             this.metroTextBoxMetric_SMA.MaxLength = 32767;
             this.metroTextBoxMetric_SMA.Multiline = true;
             this.metroTextBoxMetric_SMA.Name = "metroTextBoxMetric_SMA";
@@ -313,7 +313,7 @@
             this.EmergencyStopButton_SMA.Cursor = System.Windows.Forms.Cursors.Default;
             this.EmergencyStopButton_SMA.ForeColor = System.Drawing.Color.Red;
             this.EmergencyStopButton_SMA.Location = new System.Drawing.Point(526, 28);
-            this.EmergencyStopButton_SMA.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.EmergencyStopButton_SMA.Margin = new System.Windows.Forms.Padding(2);
             this.EmergencyStopButton_SMA.Name = "EmergencyStopButton_SMA";
             this.EmergencyStopButton_SMA.Size = new System.Drawing.Size(56, 50);
             this.EmergencyStopButton_SMA.TabIndex = 13;
@@ -343,9 +343,10 @@
             this.Controls.Add(this.buttonOpenDataMon_SMA);
             this.Controls.Add(this.buttonChoiceFile);
             this.ForeColor = System.Drawing.Color.Transparent;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
+            this.MinimumSize = new System.Drawing.Size(580, 360);
             this.Name = "MainWindow_SMA";
-            this.Padding = new System.Windows.Forms.Padding(15, 49, 15, 16);
+            this.Padding = new System.Windows.Forms.Padding(15, 60, 15, 16);
             this.Text = "СМЕРШ";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInterval_SMA)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MonitoringDurationNumeric_SMA)).EndInit();
