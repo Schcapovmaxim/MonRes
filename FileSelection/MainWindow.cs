@@ -400,5 +400,17 @@ namespace SMERH // Пространство имен служащее для л�
                 }
             }
         }
+
+        private void checkedListBoxfunction_DIA_MouseUp(object sender, MouseEventArgs e) // Функция по установлению галочки первым кликом
+        {
+            CheckedListBox clb = sender as CheckedListBox;
+            int index = clb.IndexFromPoint(e.Location);
+
+            if (index != ListBox.NoMatches)
+            {
+                bool currentCheckState = clb.GetItemChecked(index);
+                clb.SetItemChecked(index, !currentCheckState);
+            }
+        }
     }
 }

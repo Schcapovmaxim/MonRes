@@ -143,8 +143,10 @@
             this.checkedListBoxfunction.Location = new System.Drawing.Point(10, 203);
             this.checkedListBoxfunction.Margin = new System.Windows.Forms.Padding(2);
             this.checkedListBoxfunction.Name = "checkedListBoxfunction";
+            this.checkedListBoxfunction.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.checkedListBoxfunction.Size = new System.Drawing.Size(155, 60);
             this.checkedListBoxfunction.TabIndex = 5;
+            this.checkedListBoxfunction.MouseUp += new System.Windows.Forms.MouseEventHandler(this.checkedListBoxfunction_DIA_MouseUp);
             // 
             // OutPutTextBox_BVP
             // 
@@ -298,7 +300,7 @@
             this.metroLabel_DIA.ForeColor = System.Drawing.Color.Transparent;
             this.metroLabel_DIA.Location = new System.Drawing.Point(170, 76);
             this.metroLabel_DIA.Name = "metroLabel_DIA";
-            this.metroLabel_DIA.Size = new System.Drawing.Size(141, 15);
+            this.metroLabel_DIA.Size = new System.Drawing.Size(137, 15);
             this.metroLabel_DIA.TabIndex = 14;
             this.metroLabel_DIA.Text = "Интервал мониторинга";
             // 
