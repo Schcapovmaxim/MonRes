@@ -389,6 +389,8 @@ namespace SMERH // Пространство имен служащее для л�
                     MessageBox.Show("Все операции аварийно остановлены!", "Экстренная остановка",
                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
+                    // 5. Сделать кнопку "Старт таймера" снова активной
+                    ButtonStartTimer_SMA.Enabled = true;
 
                 }
                 catch (Exception ex)
@@ -396,6 +398,18 @@ namespace SMERH // Пространство имен служащее для л�
                     MessageBox.Show($"Ошибка при остановке: {ex.Message}", "Ошибка",
                                    MessageBoxButtons.OK, MessageBoxIcon.Error); // Обработка ошибок
                 }
+            }
+        }
+
+        private void checkedListBoxfunction_DIA_MouseUp(object sender, MouseEventArgs e) // Функция по установлению галочки первым кликом
+        {
+            CheckedListBox clb = sender as CheckedListBox;
+            int index = clb.IndexFromPoint(e.Location);
+
+            if (index != ListBox.NoMatches)
+            {
+                bool currentCheckState = clb.GetItemChecked(index);
+                clb.SetItemChecked(index, !currentCheckState);
             }
         }
     }
