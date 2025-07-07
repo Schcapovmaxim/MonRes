@@ -83,7 +83,6 @@
             this.buttonOpenDataMon_SMA.TabIndex = 1;
             this.toolTip1.SetToolTip(this.buttonOpenDataMon_SMA, "Перейти к выбору мониторинга");
             this.buttonOpenDataMon_SMA.UseVisualStyleBackColor = true;
-           
             // 
             // numericUpDownInterval_SMA
             // 
@@ -109,7 +108,7 @@
             this.numericUpDownInterval_SMA.TabIndex = 10;
             this.toolTip1.SetToolTip(this.numericUpDownInterval_SMA, "Интервал таймера в миллисекундах");
             this.numericUpDownInterval_SMA.Value = new decimal(new int[] {
-            5000,
+            1000,
             0,
             0,
             0});
@@ -309,10 +308,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-
             this.ClientSize = new System.Drawing.Size(600, 366);
             this.Controls.Add(this.metroLabel_DIA);
-
             this.Controls.Add(this.EmergencyStopButton_SMA);
             this.Controls.Add(this.metroTextBoxMetric_SMA);
             this.Controls.Add(this.numericUpDownInterval_SMA);
