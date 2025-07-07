@@ -402,5 +402,10 @@ namespace SMERH // Пространство имен служащее для л�
                 }
             }
         }
+
+        private void buttonOpenDataMon_SMA_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -81,6 +81,7 @@
             this.buttonOpenDataMon_SMA.TabIndex = 1;
             this.toolTip1.SetToolTip(this.buttonOpenDataMon_SMA, "Перейти к выбору мониторинга");
             this.buttonOpenDataMon_SMA.UseVisualStyleBackColor = true;
+            this.buttonOpenDataMon_SMA.Click += new System.EventHandler(this.buttonOpenDataMon_SMA_Click);
             // 
             // numericUpDownInterval_SMA
             // 
@@ -311,6 +312,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BorderStyle = MetroFramework.Forms.MetroFormBorderStyle.FixedSingle;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.EmergencyStopButton_SMA);
             this.Controls.Add(this.metroTextBoxMetric_SMA);
