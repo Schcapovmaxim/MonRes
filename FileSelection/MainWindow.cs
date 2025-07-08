@@ -51,6 +51,8 @@
     
     }
 }*/
+using SharpPcap;
+using SharpPcap.LibPcap;
 using System; // Стандартное пространство имён и функции .NET(Console,String,Array,Math),обработка исключений
 using System.Collections.Generic; // Работа с коллекциями(список,очередь,стек,cловарь)
 using System.ComponentModel; // Улучшение дизайна форм
@@ -68,6 +70,11 @@ using Microsoft.VisualBasic.Devices; // Вспомогатлеьные клас�
 using System.Management; // Запросы к системной информации (процессы, диски)
 using SMERH.Core;
 using SMERH.Data;
+using System.Net;
+using System.Net.Sockets;
+using System.Runtime.InteropServices;
+using PacketDotNet;
+using System.Text.RegularExpressions;
 
 namespace SMERH // Пространство имен служащее для логической группировки связанных классов всего приложения в данном случае
 {
@@ -189,10 +196,67 @@ namespace SMERH // Пространство имен служащее для л�
                 {
                     OutPutTextBox_BVP.AppendText($"{conn.LocalEndPoint} -> {conn.RemoteEndPoint} ({conn.State})\n"); // Вывод портов
                 }
+
+                List<string> allowedParameters = new List<string> { "SourceAddress", "DestinationAddress", "Protocol", "SourcePort", "DestinationPort" }; // список параметров (ключей), которые требуется забрать из пакета (вместе со значениями)
+
+                Task.Run(() =>
+                {
+                    CaptureDeviceList devices = CaptureDeviceList.Instance; // получение сетевых устройств
+                    foreach (ICaptureDevice device in devices) //проход по всем сетевым устройствам
+                    {
+                        device.OnPacketArrival += (sender, e) => // событие при появлении нового пакета
+                        {
+                            var rawCapture = e.GetPacket(); // получение пакета
+                            var packet = Packet.ParsePacket(rawCapture.LinkLayerType, rawCapture.Data); // преобразует пакет в PacketDotNet.Packet
+
+                            string s = $"{device.Description};"; // в этой переменной хранится строка, которая будет выводиться в поле вывода
+                            int s_Length = s.Length; // запись длины s
+
+                            foreach (string pair in packet.ToString().Replace(",", "").Split(' ')) // получение пар ключ->значение
+                            {
+                                string[] splittedPair = pair.Split('=');
+                                if (splittedPair.Length == 2 && allowedParameters.Contains(splittedPair[0])) // проверяет, что можно получить ключ->значение и что ключ входит в список тех ключей которые требуются
+                                {
+                                    s += $"{splittedPair[0]}={splittedPair[1]},"; // отправляет в переменную новую пару ключ->значение
+                                }
+                            }
+
+                            if (s.Length == s_Length) // проверка если у пакета нет обычной информации по типу адреса получателя
+                            {
+                                goto EX; // пока что в таком случае просто пропускается пакет
+                            }
+
+                            s+= $"Bytes={rawCapture.Data.Length}"; // запись в переменную того, сколько байт было передано
+                            AppendOutputSafe(s); // отправка строки в поле вывода
+                        EX: // метка для пропуска пакета 
+                            { }
+                        };
+
+                        device.Open(DeviceModes.Promiscuous, (int)numericUpDownInterval_SMA.Value); // Открывает устройство
+                        device.StartCapture(); // Запускает захват
+                    }
+                });
             }
             catch (Exception ex)
             {
                 OutPutTextBox_BVP.AppendText($"Ошибка: {ex.Message}\r\n"); // Обработка ошибок
+            }
+        }
+
+        private void AppendOutputSafe(string text)
+        {
+            if (OutPutTextBox_BVP.InvokeRequired)
+            {
+                // Мы не в UI-потоке → вызываем через Invoke
+                OutPutTextBox_BVP.Invoke(new Action(() =>
+                {
+                    OutPutTextBox_BVP.AppendText(text + "\r\n");
+                }));
+            }
+            else
+            {
+                // Уже в UI-потоке → можно безопасно обращаться к контролу
+                OutPutTextBox_BVP.AppendText(text + "\r\n");
             }
         }
 
