@@ -69,6 +69,7 @@ using Microsoft.VisualBasic.Devices; // Вспомогатлеьные клас�
 using System.Management; // Запросы к системной информации (процессы, диски)
 using SMERH.Core;
 using SMERH.Data;
+using FileSelection; // для использования других форм
 
 namespace SMERH // Пространство имен служащее для логической группировки связанных классов всего приложения в данном случае
 {
@@ -81,7 +82,8 @@ namespace SMERH // Пространство имен служащее для л�
         private PerformanceCounter _ioWriteCounter; // Отслеживает скрость записи на диск (байт/сек)
         private Timer _monitorTimer; // Таймер для переодического обновления метрик
         private Timer _stopMonitoringTimer; // Таймер для автоматической остановки мониторинга через заданное время
-        private int _remainingSeconds; // Счетчик секунд 
+        private int _remainingSeconds; // Счетчик секунд
+        private Checkbox checkboxForm; // Хранит информацию о форме Checkbox
 
         public MainWindow_SMA() // Конструктор класса для инциализации начального состояния
         {
@@ -421,6 +423,35 @@ namespace SMERH // Пространство имен служащее для л�
                 clb.SetItemChecked(index, !currentCheckState);
             }
 
+        }
+
+        private void switchEnabledOption(Control parent, bool enabled) // функция по переключению свойства Enabled у всего на форме или у объекта
+        {
+            foreach (Control ctrl in parent.Controls)
+            {
+                ctrl.Enabled = enabled; // переключение свойства Enabled
+
+                if (ctrl.HasChildren) // если у объекта есть дочерние объекты
+                {
+                    switchEnabledOption(ctrl, enabled); // новый вызов, но для такого объекта
+                }
+            }
+        }
+
+        private void metroButtonOptions_DIA_Click(object sender, EventArgs e) // функция по открытию формы с чекбоксом
+        {
+            checkboxForm = new Checkbox(); // инициализация формы
+            checkboxForm.StartPosition = FormStartPosition.Manual; // указание, что место появления формы будет чётко указано
+            checkboxForm.Location = new Point(this.Location.X + metroButtonOptions_DIA.Location.X, this.Location.Y + metroButtonOptions_DIA.Location.Y + metroButtonOptions_DIA.Height); // указание местоположения формы
+            checkboxForm.Deactivate += (s, args) => { // обработка если форма станет не активной
+                checkboxForm.Close(); // закрытие формы Checkbox
+                this.BeginInvoke(new Action(() => {
+                    this.Activate(); // активация основной ормы
+                    switchEnabledOption(this, true); // активация объектов основной формы
+                }));
+            };
+            switchEnabledOption(this, false); // деактивация объектов основной формы
+            checkboxForm.Show(this); // открытие формы Checkbox
         }
     }
 }

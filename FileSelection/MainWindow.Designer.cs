@@ -45,6 +45,7 @@
             this.metroTextBoxMetric_SMA = new MetroFramework.Controls.MetroTextBox();
             this.EmergencyStopButton_SMA = new MetroFramework.Controls.MetroButton();
             this.metroLabel_DIA = new MetroFramework.Controls.MetroLabel();
+            this.metroButtonOptions_DIA = new MetroFramework.Controls.MetroButton();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInterval_SMA)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MonitoringDurationNumeric_SMA)).BeginInit();
             this.SuspendLayout();
@@ -83,7 +84,6 @@
             this.buttonOpenDataMon_SMA.TabIndex = 1;
             this.toolTip1.SetToolTip(this.buttonOpenDataMon_SMA, "Перейти к выбору мониторинга");
             this.buttonOpenDataMon_SMA.UseVisualStyleBackColor = true;
-           
             // 
             // numericUpDownInterval_SMA
             // 
@@ -305,14 +305,23 @@
             this.metroLabel_DIA.TabIndex = 14;
             this.metroLabel_DIA.Text = "Интервал мониторинга";
             // 
+            // metroButtonOptions_DIA
+            // 
+            this.metroButtonOptions_DIA.Location = new System.Drawing.Point(10, 144);
+            this.metroButtonOptions_DIA.Name = "metroButtonOptions_DIA";
+            this.metroButtonOptions_DIA.Size = new System.Drawing.Size(78, 49);
+            this.metroButtonOptions_DIA.TabIndex = 15;
+            this.metroButtonOptions_DIA.Text = "Параметры";
+            this.metroButtonOptions_DIA.UseSelectable = true;
+            this.metroButtonOptions_DIA.Click += new System.EventHandler(this.metroButtonOptions_DIA_Click);
+            // 
             // MainWindow_SMA
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-
             this.ClientSize = new System.Drawing.Size(600, 366);
+            this.Controls.Add(this.metroButtonOptions_DIA);
             this.Controls.Add(this.metroLabel_DIA);
-
             this.Controls.Add(this.EmergencyStopButton_SMA);
             this.Controls.Add(this.metroTextBoxMetric_SMA);
             this.Controls.Add(this.numericUpDownInterval_SMA);
@@ -355,6 +364,7 @@
         private MetroFramework.Controls.MetroTextBox metroTextBoxMetric_SMA;
         private MetroFramework.Controls.MetroButton EmergencyStopButton_SMA;
         private MetroFramework.Controls.MetroLabel metroLabel_DIA;
+        private MetroFramework.Controls.MetroButton metroButtonOptions_DIA;
     }
 }
 
