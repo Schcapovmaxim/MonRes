@@ -146,6 +146,7 @@
             this.checkedListBoxfunction.SelectionMode = System.Windows.Forms.SelectionMode.None;
             this.checkedListBoxfunction.Size = new System.Drawing.Size(155, 60);
             this.checkedListBoxfunction.TabIndex = 5;
+            this.checkedListBoxfunction.SelectedIndexChanged += new System.EventHandler(this.checkedListBoxfunction_SelectedIndexChanged);
             this.checkedListBoxfunction.MouseUp += new System.Windows.Forms.MouseEventHandler(this.checkedListBoxfunction_DIA_MouseUp);
             // 
             // OutPutTextBox_BVP

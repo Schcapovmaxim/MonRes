@@ -8,5 +8,6 @@ namespace SMERH.Data
 {
     public class DataService
     {
+
     }
 }
