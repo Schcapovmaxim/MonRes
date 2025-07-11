@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMERH.Data", "SMERH.Data\SM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VovaResourceMonitorTest", "VovaResourceMonitorTest\VovaResourceMonitorTest.csproj", "{726F8F2B-1BF4-4741-A287-251118746ED7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MalwareAnalysisTest", "MalwareAnalysisTest\MalwareAnalysisTest.csproj", "{A7FA80FB-3CD0-4501-A76B-DEC10CABC235}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,14 @@ Global
 		{726F8F2B-1BF4-4741-A287-251118746ED7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{726F8F2B-1BF4-4741-A287-251118746ED7}.Release|x64.ActiveCfg = Release|Any CPU
 		{726F8F2B-1BF4-4741-A287-251118746ED7}.Release|x64.Build.0 = Release|Any CPU
+		{A7FA80FB-3CD0-4501-A76B-DEC10CABC235}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7FA80FB-3CD0-4501-A76B-DEC10CABC235}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7FA80FB-3CD0-4501-A76B-DEC10CABC235}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A7FA80FB-3CD0-4501-A76B-DEC10CABC235}.Debug|x64.Build.0 = Debug|Any CPU
+		{A7FA80FB-3CD0-4501-A76B-DEC10CABC235}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7FA80FB-3CD0-4501-A76B-DEC10CABC235}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7FA80FB-3CD0-4501-A76B-DEC10CABC235}.Release|x64.ActiveCfg = Release|Any CPU
+		{A7FA80FB-3CD0-4501-A76B-DEC10CABC235}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,6 +74,7 @@ Global
 		{10D84285-C9E5-45DE-BA5D-3688194E0E88} = {EAAF9578-69AB-4349-AFBD-C469169CF86C}
 		{74A0031C-E39B-4F66-B7BF-8A85100569C6} = {EAAF9578-69AB-4349-AFBD-C469169CF86C}
 		{726F8F2B-1BF4-4741-A287-251118746ED7} = {EAAF9578-69AB-4349-AFBD-C469169CF86C}
+		{A7FA80FB-3CD0-4501-A76B-DEC10CABC235} = {EAAF9578-69AB-4349-AFBD-C469169CF86C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0EB6DCCE-48A1-4965-98B0-DE5B0C2B92C1}

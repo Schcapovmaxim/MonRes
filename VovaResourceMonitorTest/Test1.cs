@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SMERH.Core;
+using SMERH.core;
 using System;
 using System.Diagnostics;
 using System.Threading;
