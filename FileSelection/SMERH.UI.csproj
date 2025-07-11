@@ -92,11 +92,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Checkbox.cs">
+    <Compile Include="OptionsCheckedListBoxForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Checkbox.Designer.cs">
-      <DependentUpon>Checkbox.cs</DependentUpon>
+    <Compile Include="OptionsCheckedListBoxForm.Designer.cs">
+      <DependentUpon>OptionsCheckedListBoxForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
@@ -106,8 +106,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Checkbox.resx">
-      <DependentUpon>Checkbox.cs</DependentUpon>
+    <EmbeddedResource Include="OptionsCheckedListBoxForm.resx">
+      <DependentUpon>OptionsCheckedListBoxForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>

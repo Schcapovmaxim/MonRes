@@ -83,7 +83,8 @@ namespace SMERH // Пространство имен служащее для л�
         private Timer _monitorTimer; // Таймер для переодического обновления метрик
         private Timer _stopMonitoringTimer; // Таймер для автоматической остановки мониторинга через заданное время
         private int _remainingSeconds; // Счетчик секунд
-        private Checkbox checkboxForm; // Хранит информацию о форме Checkbox
+        private OptionsCheckedListBoxForm optionsCheckedListBoxForm; // Хранит информацию о форме Checkbox
+        private string[] selectedCheckBoxes; // Хранит информацию о выбранных чекбоксах у формы Checkbox
 
         public MainWindow_SMA() // Конструктор класса для инциализации начального состояния
         {
@@ -112,7 +113,7 @@ namespace SMERH // Пространство имен служащее для л�
                 TimeRemainingLabel_SMA.Text = "Мониторинг остановлен по таймеру"; // Уведомляем пользовтеля об остановке мониторинга
                 ButtonStartTimer_SMA.Enabled = true; // Активируем кнопку для запуска таймера
                 TimeRemainingLabel_SMA.ForeColor = Color.Red; // Меняем цвет на красный в конце мониторинга
-                checkedListBoxfunction.Enabled = true; // Активация возможности выбрать мониторинг 
+                metroButtonOptions_DIA.Enabled = true; // Активация возможности выбрать мониторинг 
                 MonitoringDurationNumeric_SMA.Enabled = true; // Активация возможности менять таймер
                 numericUpDownInterval_SMA.Enabled = true; // Активация возможности менять интервал
                 buttonChoiceFile.Enabled = true; // Активация выбора файла
@@ -133,7 +134,7 @@ namespace SMERH // Пространство имен служащее для л�
         }
         private bool ChoiceMonCheck() // Метод проверяющий сделан ли выбор типа мониторинга
         {
-            if (checkedListBoxfunction.CheckedItems.Count == 0) // Проверка выбран ли тип мониторинга
+            if (selectedCheckBoxes == null || selectedCheckBoxes.Length == 0) // Проверка выбран ли тип мониторинга
             {
                 OutPutTextBox_BVP.Text = "Выберите параметры для мониторинга";
                 return false; // Вывод сообщения об оишбке
@@ -150,12 +151,12 @@ namespace SMERH // Пространство имен служащее для л�
                 return; // Останавливаем метод UpdateMonitoring(), если не запущен процесс
             }
 
-            if (!ChoiceMonCheck()) // Вызываем метод, проверяющий сделан ли выбор мониторинга 
+            if (ChoiceMonCheck() == false) // Вызываем метод, проверяющий сделан ли выбор мониторинга 
             {
                 return; // Останавливаем метод UpdateMonitoring(), если чекбоксы не стоят  
             }
 
-            foreach (var item in checkedListBoxfunction.CheckedItems) // Запускаем цикл по всем чекбоксам
+            foreach (var item in selectedCheckBoxes) // Запускаем цикл по всем чекбоксам
             {
                 switch (item.ToString()) // Принимаем значения чекбоксов
                 {
@@ -343,7 +344,7 @@ namespace SMERH // Пространство имен служащее для л�
                 ButtonStartTimer_SMA.Enabled = true; // Активация возомжности запуска таймера
                 return; // Останавливаем метод ButtonStartTimer_SMA_Click(), если чекбоксы не стоят  
             }
-            checkedListBoxfunction.Enabled = false; // Диактивация возможности выбрать мониторинг
+            metroButtonOptions_DIA.Enabled = false; // Диактивация возможности выбрать мониторинг
             MonitoringDurationNumeric_SMA.Enabled = false; // Диактивация возможности менять таймер
             numericUpDownInterval_SMA.Enabled = false; // Диактивация возможности менять интервал
             buttonChoiceFile.Enabled = false; // Диактивация выбора файла
@@ -375,7 +376,7 @@ namespace SMERH // Пространство имен служащее для л�
 
                 try
                 {
-                    checkedListBoxfunction.Enabled = true; // Активация возможности выбрать мониторинг 
+                    metroButtonOptions_DIA.Enabled = true; // Активация возможности выбрать мониторинг 
                     MonitoringDurationNumeric_SMA.Enabled = true; // Активация возможности менять таймер
                     numericUpDownInterval_SMA.Enabled = true; // Активация возможности менять интервал
                     buttonChoiceFile.Enabled = true; // Активация выбора файла
@@ -407,24 +408,6 @@ namespace SMERH // Пространство имен служащее для л�
             }
         }
 
-
-       
-        
-
-
-        private void checkedListBoxfunction_DIA_MouseUp(object sender, MouseEventArgs e) // Функция по установлению галочки первым кликом
-        {
-            CheckedListBox clb = sender as CheckedListBox;
-            int index = clb.IndexFromPoint(e.Location);
-
-            if (index != ListBox.NoMatches)
-            {
-                bool currentCheckState = clb.GetItemChecked(index);
-                clb.SetItemChecked(index, !currentCheckState);
-            }
-
-        }
-
         private void switchEnabledOption(Control parent, bool enabled) // функция по переключению свойства Enabled у всего на форме или у объекта
         {
             foreach (Control ctrl in parent.Controls)
@@ -440,18 +423,26 @@ namespace SMERH // Пространство имен служащее для л�
 
         private void metroButtonOptions_DIA_Click(object sender, EventArgs e) // функция по открытию формы с чекбоксом
         {
-            checkboxForm = new Checkbox(); // инициализация формы
-            checkboxForm.StartPosition = FormStartPosition.Manual; // указание, что место появления формы будет чётко указано
-            checkboxForm.Location = new Point(this.Location.X + metroButtonOptions_DIA.Location.X, this.Location.Y + metroButtonOptions_DIA.Location.Y + metroButtonOptions_DIA.Height); // указание местоположения формы
-            checkboxForm.Deactivate += (s, args) => { // обработка если форма станет не активной
-                checkboxForm.Close(); // закрытие формы Checkbox
+            optionsCheckedListBoxForm = new OptionsCheckedListBoxForm(); // инициализация формы
+            optionsCheckedListBoxForm.StartPosition = FormStartPosition.Manual; // указание, что место появления формы будет чётко указано
+            optionsCheckedListBoxForm.Location = new Point(this.Location.X + metroButtonOptions_DIA.Location.X, this.Location.Y + metroButtonOptions_DIA.Location.Y + metroButtonOptions_DIA.Height); // указание местоположения формы
+            optionsCheckedListBoxForm.Deactivate += (s, args) => { // обработка если форма станет не активной
+                optionsCheckedListBoxForm.Close(); // закрытие формы Checkbox
                 this.BeginInvoke(new Action(() => {
                     this.Activate(); // активация основной ормы
                     switchEnabledOption(this, true); // активация объектов основной формы
                 }));
             };
+            optionsCheckedListBoxForm.CheckedItemsChanged += (checkedItems) => // обработка если на какой-то чекбокс нажали
+            {
+                selectedCheckBoxes = checkedItems.ToArray(); // получение нового списка выбранных чекбоксов
+            };
+            if (selectedCheckBoxes != null && selectedCheckBoxes.Length != 0) // если выбран хоть один чекбокс
+            {
+                optionsCheckedListBoxForm.SetCheckedItems(selectedCheckBoxes.ToList()); // отправка на форму OptionsCheckedListBoxForm выбранных чекбоксов
+            }
             switchEnabledOption(this, false); // деактивация объектов основной формы
-            checkboxForm.Show(this); // открытие формы Checkbox
+            optionsCheckedListBoxForm.Show(this); // открытие формы Checkbox
         }
     }
 }

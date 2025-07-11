@@ -37,7 +37,6 @@
             this.numericUpDownInterval_SMA = new System.Windows.Forms.NumericUpDown();
             this.lblProcessInfo = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
-            this.checkedListBoxfunction = new System.Windows.Forms.CheckedListBox();
             this.OutPutTextBox_BVP = new MetroFramework.Controls.MetroTextBox();
             this.ButtonStartTimer_SMA = new MetroFramework.Controls.MetroButton();
             this.MonitoringDurationNumeric_SMA = new System.Windows.Forms.NumericUpDown();
@@ -131,23 +130,6 @@
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(0, 13);
             this.lblStatus.TabIndex = 3;
-            // 
-            // checkedListBoxfunction
-            // 
-            this.checkedListBoxfunction.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.checkedListBoxfunction.FormattingEnabled = true;
-            this.checkedListBoxfunction.Items.AddRange(new object[] {
-            "Сетевая активность",
-            "Файловая активность",
-            "Процессы",
-            "Нагрузка"});
-            this.checkedListBoxfunction.Location = new System.Drawing.Point(10, 203);
-            this.checkedListBoxfunction.Margin = new System.Windows.Forms.Padding(2);
-            this.checkedListBoxfunction.Name = "checkedListBoxfunction";
-            this.checkedListBoxfunction.SelectionMode = System.Windows.Forms.SelectionMode.None;
-            this.checkedListBoxfunction.Size = new System.Drawing.Size(155, 60);
-            this.checkedListBoxfunction.TabIndex = 5;
-            this.checkedListBoxfunction.MouseUp += new System.Windows.Forms.MouseEventHandler(this.checkedListBoxfunction_DIA_MouseUp);
             // 
             // OutPutTextBox_BVP
             // 
@@ -329,7 +311,6 @@
             this.Controls.Add(this.MonitoringDurationNumeric_SMA);
             this.Controls.Add(this.ButtonStartTimer_SMA);
             this.Controls.Add(this.OutPutTextBox_BVP);
-            this.Controls.Add(this.checkedListBoxfunction);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.lblProcessInfo);
             this.Controls.Add(this.buttonOpenDataMon_SMA);
@@ -355,7 +336,6 @@
         private System.Windows.Forms.Button buttonOpenDataMon_SMA;
         private System.Windows.Forms.Label lblProcessInfo;
         private System.Windows.Forms.Label lblStatus;
-        private System.Windows.Forms.CheckedListBox checkedListBoxfunction;
         private MetroFramework.Controls.MetroTextBox OutPutTextBox_BVP;
         private MetroFramework.Controls.MetroButton ButtonStartTimer_SMA;
         private System.Windows.Forms.NumericUpDown MonitoringDurationNumeric_SMA;
