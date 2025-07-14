@@ -77,7 +77,7 @@ using PacketDotNet;
 using System.Text.RegularExpressions;
 
 namespace SMERH // Пространство имен служащее для логической группировки связанных классов всего приложения в данном случае
-{
+{    
     public partial class MainWindow_SMA : MetroForm // Объявление класса, окно приложения
     {
         private Process _trackedProcess; // Хранит ссылку на процесс за которым ведётся мониторинг
@@ -87,8 +87,32 @@ namespace SMERH // Пространство имен служащее для л�
         private PerformanceCounter _ioWriteCounter; // Отслеживает скрость записи на диск (байт/сек)
         private Timer _monitorTimer; // Таймер для переодического обновления метрик
         private Timer _stopMonitoringTimer; // Таймер для автоматической остановки мониторинга через заданное время
-        private int _remainingSeconds; // Счетчик секунд 
-
+        private int _remainingSeconds; // Счетчик секунд
+        private List<string> allowedParameters = new List<string> { // список параметров (ключей), которые требуется забрать из пакета (вместе со значениями)
+            "SourceAddress",
+            "DestinationAddress",
+            "Protocol",
+            "SourcePort",
+            "DestinationPort"
+        };
+        private List<string> listOfIgnoredSourceAddress = new List<string> { // белый список ip отправителя
+            "192.168.0.4",
+            "192.168.0.1"
+        };
+        private List<string> listOfIgnoredDestinationAddress = new List<string> { // белый список ip получателя
+            "192.168.0.4",
+            "192.168.0.1"
+        };
+        private List<string> listOfIgnoredSourcePorts = new List<string> { // белый список портов отправителя
+            "55480",
+            "443"
+        };
+        private List<string> listOfIgnoredDestinationPorts = new List<string> { // белый список портов получателя
+            "1900",
+            "5353",
+            "5355",
+            "12743"
+        };
         public MainWindow_SMA() // Конструктор класса для инциализации начального состояния
         {
             InitializeComponent(); // Инициализирует все компоненты формы
@@ -197,8 +221,7 @@ namespace SMERH // Пространство имен служащее для л�
                     OutPutTextBox_BVP.AppendText($"{conn.LocalEndPoint} -> {conn.RemoteEndPoint} ({conn.State})\n"); // Вывод портов
                 }
 
-                List<string> allowedParameters = new List<string> { "SourceAddress", "DestinationAddress", "Protocol", "SourcePort", "DestinationPort" }; // список параметров (ключей), которые требуется забрать из пакета (вместе со значениями)
-
+                
                 Task.Run(() =>
                 {
                     CaptureDeviceList devices = CaptureDeviceList.Instance; // получение сетевых устройств
@@ -206,27 +229,66 @@ namespace SMERH // Пространство имен служащее для л�
                     {
                         device.OnPacketArrival += (sender, e) => // событие при появлении нового пакета
                         {
-                            var rawCapture = e.GetPacket(); // получение пакета
-                            var packet = Packet.ParsePacket(rawCapture.LinkLayerType, rawCapture.Data); // преобразует пакет в PacketDotNet.Packet
+                            var raw = e.GetPacket(); // получение ссылки на информацию о пакете
+                            var dataCopy = raw.Data.ToArray(); // сохранение информации о пакете
+                            var packet = Packet.ParsePacket(raw.LinkLayerType, dataCopy); // преобразует информацию о пакете в читательный вид; первый параметр указывает как эту информацию "читать"
+                            long microSeconds = (long)(raw.Timeval.Seconds * 1_000_000L + raw.Timeval.MicroSeconds); // получение микросекунды в которую отслеживается пакет
+                            TimeSpan time = TimeSpan.FromMilliseconds(microSeconds / 1000.0); // получение более понятной информацию о времени изучения пакета - день, месяц там, а не сколько миллисекунд с нулевой даты прошло
+                            string formattedTime = string.Format("{0:D2}:{1:D2}:{2:D2}.{3:D3}", time.Hours, time.Minutes, time.Seconds, time.Milliseconds); // запись времени как строки
 
-                            string s = $"{device.Description};"; // в этой переменной хранится строка, которая будет выводиться в поле вывода
+                            string s = $"{formattedTime},{device.Description},"; // в этой переменной хранится строка, которая будет выводиться в поле вывода. Первый параметр - время, в которое пакет был обнаружен, второй параметр - с каким устройством связан этот пакет
                             int s_Length = s.Length; // запись длины s
+                            Connection connection = new Connection(); // содержит информацию о соединении в более удобном виде
 
-                            foreach (string pair in packet.ToString().Replace(",", "").Split(' ')) // получение пар ключ->значение
+                            string packet_ToString = packet.ToString(); // превращение информации о пакете в строку
+                            packet_ToString = packet_ToString.Replace("[", ""); // убирает [ из данных о пакете
+                            packet_ToString = packet_ToString.Replace("]", ""); // убирает ] из данных о пакете
+                            packet_ToString = packet_ToString.Replace(",", ""); // убирает , из данных о пакете
+
+                            foreach (string pair in packet_ToString.Split(' ')) // получение пар ключ->значение
                             {
-                                string[] splittedPair = pair.Split('=');
+                                string[] splittedPair = pair.Split('='); // разделение пары на ключ->значение
                                 if (splittedPair.Length == 2 && allowedParameters.Contains(splittedPair[0])) // проверяет, что можно получить ключ->значение и что ключ входит в список тех ключей которые требуются
                                 {
+                                    switch (splittedPair[0]) { // проверяет, что пара содержит полезные данные и соотетственная подстановка в connection если это так
+                                        case "SourceAddress":
+                                            connection.SourceAddress = splittedPair[1];
+                                            break;
+                                        case "DestinationAddress":
+                                            connection.DestinationAddress = splittedPair[1];
+                                            break;
+                                        case "Protocol":
+                                            connection.Protocol = splittedPair[1];
+                                            break;
+                                        case "SourcePort":
+                                            connection.SourcePort = splittedPair[1];
+                                            break;
+                                        case "DestinationPort":
+                                            connection.DestinationPort = splittedPair[1];
+                                            break;
+                                    }
                                     s += $"{splittedPair[0]}={splittedPair[1]},"; // отправляет в переменную новую пару ключ->значение
                                 }
                             }
 
                             if (s.Length == s_Length) // проверка если у пакета нет обычной информации по типу адреса получателя
                             {
-                                goto EX; // пока что в таком случае просто пропускается пакет
+                                s += "L2,"; // в таком случае указывается, что это L2 соединение
+                            }
+                            if (connection.SourceAddress != null) // проверка если это соединение, ожидаемое не от проверяемого приложения
+                            {
+                                if (listOfIgnoredSourceAddress.Contains(connection.SourceAddress) ||
+                                listOfIgnoredDestinationAddress.Contains(connection.DestinationAddress) ||
+                                connection.SourcePort != null && listOfIgnoredSourcePorts.Contains(connection.SourcePort) ||
+                                connection.DestinationPort != null && listOfIgnoredDestinationPorts.Contains(connection.DestinationPort)
+                                ) // проверка по списку портов и адресов
+                                {
+                                    goto EX; // пропуск пакета
+                                }
                             }
 
-                            s+= $"Bytes={rawCapture.Data.Length}"; // запись в переменную того, сколько байт было передано
+
+                            s += $"Bytes={dataCopy.Length}"; // запись в переменную того, сколько байт было передано
                             AppendOutputSafe(s); // отправка строки в поле вывода
                         EX: // метка для пропуска пакета 
                             { }
@@ -476,5 +538,13 @@ namespace SMERH // Пространство имен служащее для л�
                 clb.SetItemChecked(index, !currentCheckState);
             }
         }
+    }
+    public class Connection // Содержит информацию о соединении
+    {
+        public string SourceAddress; // Адрес отправителя
+        public string SourcePort; // Порт отправителя
+        public string DestinationAddress; // Адрес получателя
+        public string DestinationPort; // Порт получателя
+        public string Protocol; // Протокол
     }
 }
