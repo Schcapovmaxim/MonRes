@@ -6,7 +6,7 @@ namespace Universal.Test.SMA
     public class UnitTest1
     {
         // Путь к тестовому файлу (можно изменить на ваш)
-        private static readonly string TestFilePath = @"C:\Users\Haier\Desktop\txt\17.txt";
+        private static readonly string TestFilePath = @"C:\Users\Haier\AppData\Local\Yandex\YandexBrowser\Application\browser.exe";
         private static Process _startedProcess; // Переменная для хранения процесса
 
         // Этот метод будет запускаться перед всеми тестами
