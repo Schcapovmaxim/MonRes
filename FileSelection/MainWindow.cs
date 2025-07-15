@@ -95,28 +95,18 @@ namespace SMERH // Пространство имен служащее для л�
             "SourcePort",
             "DestinationPort"
         };
-        private List<string> listOfIgnoredSourceAddress = new List<string> { // белый список ip отправителя
-            "192.168.0.4",
-            "192.168.0.1"
-        };
-        private List<string> listOfIgnoredDestinationAddress = new List<string> { // белый список ip получателя
-            "192.168.0.4",
-            "192.168.0.1"
-        };
-        private List<string> listOfIgnoredSourcePorts = new List<string> { // белый список портов отправителя
-            "55480",
-            "443"
-        };
-        private List<string> listOfIgnoredDestinationPorts = new List<string> { // белый список портов получателя
-            "1900",
-            "5353",
-            "5355",
-            "12743"
-        };
+        private List<string> listOfIgnoredSourceAddress = new List<string> { }; // список игнорируемых ip отправителя
+
+        private List<string> listOfIgnoredDestinationAddress = new List<string> { }; // список игнорируемых ip получателя
+
+        private List<string> listOfIgnoredSourcePorts = new List<string> { }; // список игнорируемых портов отправителя
+
+        private List<string> listOfIgnoredDestinationPorts = new List<string> { }; // список игнорируемых портов получателя
+
         public MainWindow_SMA() // Конструктор класса для инциализации начального состояния
         {
             InitializeComponent(); // Инициализирует все компоненты формы
-
+            getOptions(); // Загрузить настройки для мониторинга сети
             _monitorTimer = new Timer {Interval = (int)numericUpDownInterval_SMA.Value }; // Создаёт переменную таймер с заданным интервалом 
             _monitorTimer.Tick += (s, e) => UpdateMonitoring(); // Подписывает на событие Tick таймера лямбда-выражение, которое вызывает метод UpdateMonitoring()
 
@@ -128,6 +118,28 @@ namespace SMERH // Пространство имен служащее для л�
 
         
 
+        private void getOptions() // Функция по загрузке настроек для мониторинга сети из файлов
+        {
+            foreach (string line in File.ReadLines("cfg\\ignoredSourceAddresses.cfg"))
+            {
+                listOfIgnoredSourceAddress.Add(line);
+            }
+
+            foreach (string line in File.ReadLines("cfg\\ignoredDestinationAddress.cfg"))
+            {
+                listOfIgnoredDestinationAddress.Add(line);
+            }
+
+            foreach (string line in File.ReadLines("cfg\\ignoredSourcePorts.cfg"))
+            {
+                listOfIgnoredSourcePorts.Add(line);
+            }
+
+            foreach (string line in File.ReadLines("cfg\\ignoredDestinationPorts.cfg"))
+            {
+                listOfIgnoredDestinationPorts.Add(line);
+            }
+        }
         private void StopMonitoringTimer_Tick(object sender, EventArgs e) // Метод отвечает за отсчёт времени и остановку мониторинга по истечении таймера
         {
             _remainingSeconds--; // Уменьшаем значение таймера на 1 каждую секунду
