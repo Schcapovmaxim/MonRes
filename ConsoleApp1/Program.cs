@@ -109,7 +109,8 @@ class Program
                 int parentPid = GetParentPid(proc.Id);
 
                 // Если родитель совпадает с наблюдаемым PID — это наш дочерний процесс
-                if (parentPid == targetParentPid)
+                if (parentPid == targetParentPid || knownChildPids.Contains(parentPid))
+
                 {
                     // Добавляем процесс в список известных, чтобы не повторяться
                     knownChildPids.Add(proc.Id);
