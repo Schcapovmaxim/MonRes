@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ApiMonitoring.Core
@@ -14,37 +17,118 @@ namespace ApiMonitoring.Core
     }
 
     /// <summary>
-    /// Реализация монитора, выводящая информацию в консоль
+    /// Конфигурация для файлового мониторинга
     /// </summary>
-    public class ConsoleApiMonitor : IApiMonitor
+    public class FileMonitorConfig
     {
+        /// <summary>
+        /// Базовый путь для сохранения логов
+        /// </summary>
+        public string LogDirectory { get; set; } = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ApiLogs");
+
+        /// <summary>
+        /// Количество дней хранения логов
+        /// </summary>
+        public int LogRetentionDays { get; set; } = 7;
+
+        /// <summary>
+        /// Формат имени файла логов
+        /// </summary>
+        public string FileNameFormat { get; set; } = "{service}_{date:yyyyMMdd}.log";
+    }
+
+    /// <summary>
+    /// Реализация мониторинга с записью в файл
+    /// </summary>
+    public class FileApiMonitor : IApiMonitor, IDisposable
+    {
+        private readonly string _serviceName;
+        private readonly FileMonitorConfig _config;
+        private readonly object _fileLock = new object();
+        private readonly System.Timers.Timer _cleanupTimer;
+
+        public FileApiMonitor(string serviceName, FileMonitorConfig config = null)
+        {
+            _serviceName = serviceName;
+            _config = config ?? new FileMonitorConfig();
+
+            // Создаем директорию, если ее нет
+            Directory.CreateDirectory(_config.LogDirectory);
+
+            // Настраиваем регулярную очистку старых логов
+            _cleanupTimer = new System.Timers.Timer(TimeSpan.FromDays(1).TotalMilliseconds);
+            _cleanupTimer.Elapsed += (s, e) => CleanupOldLogs();
+            _cleanupTimer.Start();
+        }
+
         public void LogCall(string methodName, object[] parameters, object? result = null, TimeSpan? duration = null)
         {
             string args = string.Join(", ", parameters.Select(p => p?.ToString() ?? "null"));
-            string output = $"[{DateTime.UtcNow:u}] Called: {methodName}({args})";
+            string message = $"[{DateTime.Now:HH:mm:ss.fff}] ВЫЗОВ {methodName}({args})";
 
             if (duration.HasValue)
-                output += $" [Duration: {duration.Value.TotalMilliseconds} ms]";
+                message += $" | Время: {duration.Value.TotalMilliseconds}мс";
 
             if (result != null)
-                output += $"\n\t↳ Result: {result}";
+                message += $"\n  ↳ РЕЗУЛЬТАТ: {result}";
 
-            Console.WriteLine(output);
+            WriteToFile(message);
         }
 
         public void LogException(string methodName, Exception exception, TimeSpan? duration = null)
         {
-            string output = $"[{DateTime.UtcNow:u}] Error in {methodName}: {exception.Message}";
+            string message = $"[{DateTime.Now:HH:mm:ss.fff}] ОШИБКА в {methodName}: {exception.Message}";
 
             if (duration.HasValue)
-                output += $" [Duration: {duration.Value.TotalMilliseconds} ms]";
+                message += $" | Время: {duration.Value.TotalMilliseconds}мс";
 
-            Console.WriteLine(output);
+            WriteToFile(message);
+        }
+
+        private void WriteToFile(string message)
+        {
+            lock (_fileLock)
+            {
+                string fileName = _config.FileNameFormat
+                    .Replace("{service}", _serviceName)
+                    .Replace("{date:yyyyMMdd}", DateTime.Now.ToString("yyyyMMdd"));
+
+                string filePath = Path.Combine(_config.LogDirectory, fileName);
+                File.AppendAllText(filePath, message + Environment.NewLine);
+            }
+        }
+
+        private void CleanupOldLogs()
+        {
+            try
+            {
+                lock (_fileLock)
+                {
+                    var cutoff = DateTime.Now.AddDays(-_config.LogRetentionDays);
+                    var files = Directory.GetFiles(_config.LogDirectory, $"{_serviceName}_*.log");
+
+                    foreach (var file in files)
+                    {
+                        if (File.GetCreationTime(file) < cutoff)
+                            File.Delete(file);
+                    }
+                }
+            }
+            catch
+            {
+                // Игнорируем ошибки при очистке
+            }
+        }
+
+        public void Dispose()
+        {
+            _cleanupTimer?.Stop();
+            _cleanupTimer?.Dispose();
         }
     }
 
     /// <summary>
-    /// Базовый класс для отслеживаемых API сервисов
+    /// Базовый класс для API с мониторингом
     /// </summary>
     public abstract class MonitoredApi
     {
@@ -55,7 +139,10 @@ namespace ApiMonitoring.Core
             Monitor = monitor ?? throw new ArgumentNullException(nameof(monitor));
         }
 
-        protected T Execute<T>(string methodName, Func<T> method, params object[] parameters)
+        /// <summary>
+        /// Выполняет метод с возвращаемым значением и мониторингом
+        /// </summary>
+        protected T Выполнить<T>(string methodName, Func<T> method, params object[] parameters)
         {
             var sw = Stopwatch.StartNew();
             try
@@ -73,7 +160,10 @@ namespace ApiMonitoring.Core
             }
         }
 
-        protected void Execute(string methodName, Action method, params object[] parameters)
+        /// <summary>
+        /// Выполняет метод без возвращаемого значения с мониторингом
+        /// </summary>
+        protected void Выполнить(string methodName, Action method, params object[] parameters)
         {
             var sw = Stopwatch.StartNew();
             try
@@ -90,7 +180,10 @@ namespace ApiMonitoring.Core
             }
         }
 
-        protected async Task<T> ExecuteAsync<T>(string methodName, Func<Task<T>> method, params object[] parameters)
+        /// <summary>
+        /// Выполняет асинхронный метод с возвращаемым значением и мониторингом
+        /// </summary>
+        protected async Task<T> ВыполнитьАсинхронно<T>(string methodName, Func<Task<T>> method, params object[] parameters)
         {
             var sw = Stopwatch.StartNew();
             try
@@ -108,7 +201,10 @@ namespace ApiMonitoring.Core
             }
         }
 
-        protected async Task ExecuteAsync(string methodName, Func<Task> method, params object[] parameters)
+        /// <summary>
+        /// Выполняет асинхронный метод без возвращаемого значения с мониторингом
+        /// </summary>
+        protected async Task ВыполнитьАсинхронно(string methodName, Func<Task> method, params object[] parameters)
         {
             var sw = Stopwatch.StartNew();
             try

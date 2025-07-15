@@ -1,6 +1,7 @@
 ﻿using ApiMonitoring.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace ApiMonitoring.Tests
@@ -8,136 +9,76 @@ namespace ApiMonitoring.Tests
     [TestClass]
     public class ApiMonitoringTests
     {
-        /// <summary>
-        /// Тестовый сервис для демонстрации
-        /// </summary>
-        public interface ICalculatorService
-        {
-            int Add(int a, int b);
-            void ThrowError();
-            Task<int> MultiplyAsync(int a, int b);
-            Task LongOperationAsync();
-        }
+        public TestContext TestContext { get; set; }
 
-        /// <summary>
-        /// Реальная реализация сервиса
-        /// </summary>
-        public class CalculatorService : ICalculatorService
-        {
-            public int Add(int a, int b) => a + b;
-
-            public void ThrowError() => throw new InvalidOperationException("Test error");
-
-            public async Task<int> MultiplyAsync(int a, int b)
-            {
-                await Task.Delay(100); // Имитация асинхронной работы
-                return a * b;
-            }
-
-            public async Task LongOperationAsync()
-            {
-                await Task.Delay(200); // Имитация долгой операции
-            }
-        }
-
-        /// <summary>
-        /// Обёртка с мониторингом для тестового сервиса
-        /// </summary>
-        public class MonitoredCalculator : MonitoredApi, ICalculatorService
-        {
-            private readonly ICalculatorService _service = new CalculatorService();
-
-            public MonitoredCalculator(IApiMonitor monitor) : base(monitor) { }
-
-            public int Add(int a, int b)
-            {
-                return Execute(
-                    methodName: nameof(Add),
-                    method: () => _service.Add(a, b),
-                    parameters: new object[] { a, b }
-                );
-            }
-
-            public void ThrowError()
-            {
-                Execute(
-                    methodName: nameof(ThrowError),
-                    method: () => _service.ThrowError(),
-                    parameters: Array.Empty<object>()
-                );
-            }
-
-            public Task<int> MultiplyAsync(int a, int b)
-            {
-                return ExecuteAsync(
-                    methodName: nameof(MultiplyAsync),
-                    method: () => _service.MultiplyAsync(a, b),
-                    parameters: new object[] { a, b }
-                );
-            }
-
-            public Task LongOperationAsync()
-            {
-                return ExecuteAsync(
-                    methodName: nameof(LongOperationAsync),
-                    method: () => _service.LongOperationAsync(),
-                    parameters: Array.Empty<object>()
-                );
-            }
-        }
-
-        // Тесты
         [TestMethod]
-        public void Add_TwoNumbers_ReturnsSumAndLogs()
+        public void Сложение_ДваЧисла_ВозвращаетСуммуИЛогирует()
         {
+            // Конфигурация с пользовательским путем
+            var config = new FileMonitorConfig
+            {
+                LogDirectory = Path.Combine(TestContext.TestRunDirectory, "ApiLogs")
+            };
+
             // Arrange
-            var monitor = new ConsoleApiMonitor();
-            var calculator = new MonitoredCalculator(monitor);
+            var monitor = new FileApiMonitor("Калькулятор", config);
+            TestContext.WriteLine("Начало теста сложения...");
+            var calculator = new ТестовыйКалькулятор(monitor);
 
             // Act
-            var result = calculator.Add(5, 3);
+            var result = calculator.Сложить(5, 3);
 
             // Assert
             Assert.AreEqual(8, result);
+            TestContext.WriteLine("Тест сложения завершен успешно!");
+
+            // Проверяем создание файла логов
+            string logFile = Path.Combine(config.LogDirectory, $"Калькулятор_{DateTime.Now:yyyyMMdd}.log");
+            Assert.IsTrue(File.Exists(logFile), "Файл логов не создан");
+            TestContext.WriteLine($"Логи сохранены в: {logFile}");
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void ThrowError_LogsException()
+        public void ОшибочныйМетод_ЛогируетИсключение()
         {
             // Arrange
-            var monitor = new ConsoleApiMonitor();
-            var calculator = new MonitoredCalculator(monitor);
+            var monitor = new FileApiMonitor("Калькулятор");
+            TestContext.WriteLine("Начало теста ошибки...");
+            var calculator = new ТестовыйКалькулятор(monitor);
 
             // Act & Assert
-            calculator.ThrowError();
+            calculator.ВызватьОшибку();
         }
 
-        [TestMethod]
-        public async Task MultiplyAsync_TwoNumbers_ReturnsProductAndLogs()
+        // Вспомогательные классы на русском
+        private interface IКалькулятор
         {
-            // Arrange
-            var monitor = new ConsoleApiMonitor();
-            var calculator = new MonitoredCalculator(monitor);
-
-            // Act
-            var result = await calculator.MultiplyAsync(4, 6);
-
-            // Assert
-            Assert.AreEqual(24, result);
+            int Сложить(int a, int b);
+            void ВызватьОшибку();
         }
 
-        [TestMethod]
-        public async Task LongOperationAsync_LogsDuration()
+        private class ТестовыйКалькулятор : MonitoredApi, IКалькулятор
         {
-            // Arrange
-            var monitor = new ConsoleApiMonitor();
-            var calculator = new MonitoredCalculator(monitor);
+            public ТестовыйКалькулятор(IApiMonitor monitor) : base(monitor) { }
 
-            // Act
-            await calculator.LongOperationAsync();
+            public int Сложить(int a, int b)
+            {
+                return Выполнить(
+                    methodName: nameof(Сложить),
+                    method: () => a + b,
+                    parameters: new object[] { a, b }
+                );
+            }
 
-            // Assert (проверяем через логи)
+            public void ВызватьОшибку()
+            {
+                Выполнить(
+                    methodName: nameof(ВызватьОшибку),
+                    method: () => throw new InvalidOperationException("Тестовая ошибка"),
+                    parameters: Array.Empty<object>()
+                );
+            }
         }
     }
 }
