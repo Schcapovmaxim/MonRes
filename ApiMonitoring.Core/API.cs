@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -7,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ApiMonitoring.Core
 {
+
     /// <summary>
     /// Интерфейс для мониторинга API-вызовов
     /// </summary>
@@ -142,7 +142,7 @@ namespace ApiMonitoring.Core
         /// <summary>
         /// Выполняет метод с возвращаемым значением и мониторингом
         /// </summary>
-        protected T Выполнить<T>(string methodName, Func<T> method, params object[] parameters)
+        protected T Execute<T>(string methodName, Func<T> method, params object[] parameters)
         {
             var sw = Stopwatch.StartNew();
             try
@@ -163,7 +163,7 @@ namespace ApiMonitoring.Core
         /// <summary>
         /// Выполняет метод без возвращаемого значения с мониторингом
         /// </summary>
-        protected void Выполнить(string methodName, Action method, params object[] parameters)
+        protected void Execute(string methodName, Action method, params object[] parameters)
         {
             var sw = Stopwatch.StartNew();
             try
@@ -183,7 +183,7 @@ namespace ApiMonitoring.Core
         /// <summary>
         /// Выполняет асинхронный метод с возвращаемым значением и мониторингом
         /// </summary>
-        protected async Task<T> ВыполнитьАсинхронно<T>(string methodName, Func<Task<T>> method, params object[] parameters)
+        protected async Task<T> ExecuteAsync<T>(string methodName, Func<Task<T>> method, params object[] parameters)
         {
             var sw = Stopwatch.StartNew();
             try
@@ -204,7 +204,7 @@ namespace ApiMonitoring.Core
         /// <summary>
         /// Выполняет асинхронный метод без возвращаемого значения с мониторингом
         /// </summary>
-        protected async Task ВыполнитьАсинхронно(string methodName, Func<Task> method, params object[] parameters)
+        protected async Task ExecuteAsync(string methodName, Func<Task> method, params object[] parameters)
         {
             var sw = Stopwatch.StartNew();
             try

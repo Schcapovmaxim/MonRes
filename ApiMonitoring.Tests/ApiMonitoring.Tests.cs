@@ -9,10 +9,11 @@ namespace ApiMonitoring.Tests
     [TestClass]
     public class ApiMonitoringTests
     {
+
         public TestContext TestContext { get; set; }
 
         [TestMethod]
-        public void Сложение_ДваЧисла_ВозвращаетСуммуИЛогирует()
+        public void Add_TwoNumbers_ReturnsSumAndLogs()
         {
             // Конфигурация с пользовательским путем
             var config = new FileMonitorConfig
@@ -21,60 +22,60 @@ namespace ApiMonitoring.Tests
             };
 
             // Arrange
-            var monitor = new FileApiMonitor("Калькулятор", config);
+            var monitor = new FileApiMonitor("Calculator", config);
             TestContext.WriteLine("Начало теста сложения...");
-            var calculator = new ТестовыйКалькулятор(monitor);
+            var calculator = new CalculatorService(monitor);
 
             // Act
-            var result = calculator.Сложить(5, 3);
+            var result = calculator.Add(5, 3);
 
             // Assert
             Assert.AreEqual(8, result);
             TestContext.WriteLine("Тест сложения завершен успешно!");
 
             // Проверяем создание файла логов
-            string logFile = Path.Combine(config.LogDirectory, $"Калькулятор_{DateTime.Now:yyyyMMdd}.log");
+            string logFile = Path.Combine(config.LogDirectory, $"Calculator_{DateTime.Now:yyyyMMdd}.log");
             Assert.IsTrue(File.Exists(logFile), "Файл логов не создан");
             TestContext.WriteLine($"Логи сохранены в: {logFile}");
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void ОшибочныйМетод_ЛогируетИсключение()
+        public void ErrorMethod_LogsException()
         {
             // Arrange
-            var monitor = new FileApiMonitor("Калькулятор");
+            var monitor = new FileApiMonitor("Calculator");
             TestContext.WriteLine("Начало теста ошибки...");
-            var calculator = new ТестовыйКалькулятор(monitor);
+            var calculator = new CalculatorService(monitor);
 
             // Act & Assert
-            calculator.ВызватьОшибку();
+            calculator.ErrorMethod();
         }
 
-        // Вспомогательные классы на русском
-        private interface IКалькулятор
+        // Вспомогательные классы
+        private interface ICalculator
         {
-            int Сложить(int a, int b);
-            void ВызватьОшибку();
+            int Add(int a, int b);
+            void ErrorMethod();
         }
 
-        private class ТестовыйКалькулятор : MonitoredApi, IКалькулятор
+        private class CalculatorService : MonitoredApi, ICalculator
         {
-            public ТестовыйКалькулятор(IApiMonitor monitor) : base(monitor) { }
+            public CalculatorService(IApiMonitor monitor) : base(monitor) { }
 
-            public int Сложить(int a, int b)
+            public int Add(int a, int b)
             {
-                return Выполнить(
-                    methodName: nameof(Сложить),
+                return Execute(
+                    methodName: nameof(Add),
                     method: () => a + b,
                     parameters: new object[] { a, b }
                 );
             }
 
-            public void ВызватьОшибку()
+            public void ErrorMethod()
             {
-                Выполнить(
-                    methodName: nameof(ВызватьОшибку),
+                Execute(
+                    methodName: nameof(ErrorMethod),
                     method: () => throw new InvalidOperationException("Тестовая ошибка"),
                     parameters: Array.Empty<object>()
                 );
