@@ -37,7 +37,6 @@
             this.numericUpDownInterval_SMA = new System.Windows.Forms.NumericUpDown();
             this.lblProcessInfo = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
-            this.checkedListBoxfunction = new System.Windows.Forms.CheckedListBox();
             this.OutPutTextBox_BVP = new MetroFramework.Controls.MetroTextBox();
             this.ButtonStartTimer_SMA = new MetroFramework.Controls.MetroButton();
             this.MonitoringDurationNumeric_SMA = new System.Windows.Forms.NumericUpDown();
@@ -45,6 +44,7 @@
             this.metroTextBoxMetric_SMA = new MetroFramework.Controls.MetroTextBox();
             this.EmergencyStopButton_SMA = new MetroFramework.Controls.MetroButton();
             this.metroLabel_DIA = new MetroFramework.Controls.MetroLabel();
+            this.metroButtonOptions_DIA = new MetroFramework.Controls.MetroButton();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownInterval_SMA)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MonitoringDurationNumeric_SMA)).BeginInit();
             this.SuspendLayout();
@@ -305,11 +305,22 @@
             this.metroLabel_DIA.TabIndex = 14;
             this.metroLabel_DIA.Text = "Интервал мониторинга";
             // 
+            // metroButtonOptions_DIA
+            // 
+            this.metroButtonOptions_DIA.Location = new System.Drawing.Point(10, 144);
+            this.metroButtonOptions_DIA.Name = "metroButtonOptions_DIA";
+            this.metroButtonOptions_DIA.Size = new System.Drawing.Size(78, 49);
+            this.metroButtonOptions_DIA.TabIndex = 15;
+            this.metroButtonOptions_DIA.Text = "Параметры";
+            this.metroButtonOptions_DIA.UseSelectable = true;
+            this.metroButtonOptions_DIA.Click += new System.EventHandler(this.metroButtonOptions_DIA_Click);
+            // 
             // MainWindow_SMA
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(600, 366);
+            this.Controls.Add(this.metroButtonOptions_DIA);
             this.Controls.Add(this.metroLabel_DIA);
             this.Controls.Add(this.EmergencyStopButton_SMA);
             this.Controls.Add(this.metroTextBoxMetric_SMA);
@@ -318,7 +329,6 @@
             this.Controls.Add(this.MonitoringDurationNumeric_SMA);
             this.Controls.Add(this.ButtonStartTimer_SMA);
             this.Controls.Add(this.OutPutTextBox_BVP);
-            this.Controls.Add(this.checkedListBoxfunction);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.lblProcessInfo);
             this.Controls.Add(this.buttonOpenDataMon_SMA);
@@ -344,7 +354,6 @@
         private System.Windows.Forms.Button buttonOpenDataMon_SMA;
         private System.Windows.Forms.Label lblProcessInfo;
         private System.Windows.Forms.Label lblStatus;
-        private System.Windows.Forms.CheckedListBox checkedListBoxfunction;
         private MetroFramework.Controls.MetroTextBox OutPutTextBox_BVP;
         private MetroFramework.Controls.MetroButton ButtonStartTimer_SMA;
         private System.Windows.Forms.NumericUpDown MonitoringDurationNumeric_SMA;
@@ -353,6 +362,7 @@
         private MetroFramework.Controls.MetroTextBox metroTextBoxMetric_SMA;
         private MetroFramework.Controls.MetroButton EmergencyStopButton_SMA;
         private MetroFramework.Controls.MetroLabel metroLabel_DIA;
+        private MetroFramework.Controls.MetroButton metroButtonOptions_DIA;
     }
 }
 
