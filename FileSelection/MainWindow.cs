@@ -103,6 +103,7 @@ namespace SMERH // Пространство имен служащее для л�
 
         private List<string> listOfIgnoredDestinationPorts = new List<string> { }; // список игнорируемых портов получателя
 
+        private Dictionary<(string, string, string, string, string), bool> listOfAwaitedConnections = new Dictionary<(string, string, string, string, string), bool>(); // словарь ожидаемых подключений
         public MainWindow_SMA() // Конструктор класса для инциализации начального состояния
         {
             InitializeComponent(); // Инициализирует все компоненты формы
@@ -148,6 +149,12 @@ namespace SMERH // Пространство имен служащее для л�
             foreach (string line in File.ReadLines($"cfg\\{optionsNumber}\\ignoredDestinationPorts.cfg"))
             {
                 listOfIgnoredDestinationPorts.Add(line);
+            }
+
+            foreach (string line in File.ReadLines($"cfg\\awaitedConnetions.cfg")) // получение ожидаемых подключений (адреса, порты, протокол)
+            {
+                string[] line_Splitted = line.Split(','); // разбиение строки на отдельные слова используя запятую как разделитель
+                listOfAwaitedConnections.Add((line_Splitted[0], line_Splitted[1], line_Splitted[2], line_Splitted[3], line_Splitted[4]), true); // запись в словарь подключения
             }
 
             int optionsNumber_int = Int32.Parse(optionsNumber) + 1; // увеличение номера настроек для следующего запуска
@@ -308,18 +315,29 @@ namespace SMERH // Пространство имен служащее для л�
                                 {
                                     s += "L2,"; // в таком случае указывается, что это L2 соединение
                                 }
-                                if (connection.SourceAddress != null) // проверка если это соединение, ожидаемое не от проверяемого приложения
+
+                                if (connection.SourceAddress != null) // проверка 
                                 {
-                                    if (listOfIgnoredSourceAddress.Contains(connection.SourceAddress) ||
+                                    if (listOfIgnoredSourceAddress.Contains(connection.SourceAddress) || // проверка если это соединение, ожидаемое не от проверяемого приложения по списку портов и адресов
                                     listOfIgnoredDestinationAddress.Contains(connection.DestinationAddress) ||
                                     connection.SourcePort != null && listOfIgnoredSourcePorts.Contains(connection.SourcePort) ||
                                     connection.DestinationPort != null && listOfIgnoredDestinationPorts.Contains(connection.DestinationPort)
-                                    ) // проверка по списку портов и адресов
+                                    )
                                     {
                                         goto EX; // пропуск пакета
                                     }
-                                }
 
+                                    if (!listOfAwaitedConnections.ContainsKey((connection.SourceAddress, // проверка если это неожиданное соединение от проверяемого приложения
+                                    connection.SourcePort,
+                                    connection.DestinationAddress,
+                                    connection.DestinationPort,
+                                    connection.Protocol)))
+                                    {
+                                        s += $"Bytes={dataCopy.Length},!!!UKNOWN CONNECTION!!!"; // запись в переменную того, сколько байт было передано и что это неизвестное подключение
+                                        AppendOutputSafe(s);
+                                        goto EX;
+                                    }
+                                }
 
                                 s += $"Bytes={dataCopy.Length}"; // запись в переменную того, сколько байт было передано
                                 AppendOutputSafe(s); // отправка строки в поле вывода
