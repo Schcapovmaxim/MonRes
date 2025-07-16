@@ -340,8 +340,8 @@ namespace SMERH // Пространство имен служащее для л�
                                         AppendOutputSafe(s);
                                         if (!_trackedProcess.HasExited)
                                         {
-                                            _trackedProcess.Kill();
-                                            _trackedProcess.WaitForExit();
+                                            //_trackedProcess.Kill();
+                                            //_trackedProcess.WaitForExit();
                                         }
                                         goto EX;
                                     }
