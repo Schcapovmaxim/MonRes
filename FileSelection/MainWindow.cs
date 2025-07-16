@@ -261,66 +261,71 @@ namespace SMERH // Пространство имен служащее для л�
                             var raw = e.GetPacket(); // получение ссылки на информацию о пакете
                             var dataCopy = raw.Data.ToArray(); // сохранение информации о пакете
                             var packet = Packet.ParsePacket(raw.LinkLayerType, dataCopy); // преобразует информацию о пакете в читательный вид; первый параметр указывает как эту информацию "читать"
-                            long microSeconds = (long)(raw.Timeval.Seconds * 1_000_000L + raw.Timeval.MicroSeconds); // получение микросекунды в которую отслеживается пакет
-                            TimeSpan time = TimeSpan.FromMilliseconds(microSeconds / 1000.0); // получение более понятной информацию о времени изучения пакета - день, месяц там, а не сколько миллисекунд с нулевой даты прошло
-                            string formattedTime = string.Format("{0:D2}:{1:D2}:{2:D2}.{3:D3}", time.Hours, time.Minutes, time.Seconds, time.Milliseconds); // запись времени как строки
-
-                            string s = $"{formattedTime},{device.Description},"; // в этой переменной хранится строка, которая будет выводиться в поле вывода. Первый параметр - время, в которое пакет был обнаружен, второй параметр - с каким устройством связан этот пакет
-                            int s_Length = s.Length; // запись длины s
-                            Connection connection = new Connection(); // содержит информацию о соединении в более удобном виде
-
-                            string packet_ToString = packet.ToString(); // превращение информации о пакете в строку
-                            packet_ToString = packet_ToString.Replace("[", ""); // убирает [ из данных о пакете
-                            packet_ToString = packet_ToString.Replace("]", ""); // убирает ] из данных о пакете
-                            packet_ToString = packet_ToString.Replace(",", ""); // убирает , из данных о пакете
-
-                            foreach (string pair in packet_ToString.Split(' ')) // получение пар ключ->значение
+                            Task.Run(() => // Обработка пакета в отдельном потоке
                             {
-                                string[] splittedPair = pair.Split('='); // разделение пары на ключ->значение
-                                if (splittedPair.Length == 2 && allowedParameters.Contains(splittedPair[0])) // проверяет, что можно получить ключ->значение и что ключ входит в список тех ключей которые требуются
+                                long microSeconds = (long)(raw.Timeval.Seconds * 1_000_000L + raw.Timeval.MicroSeconds); // получение микросекунды в которую отслеживается пакет
+                                TimeSpan time = TimeSpan.FromMilliseconds(microSeconds / 1000.0); // получение более понятной информацию о времени изучения пакета - день, месяц там, а не сколько миллисекунд с нулевой даты прошло
+                                string formattedTime = string.Format("{0:D2}:{1:D2}:{2:D2}.{3:D3}", time.Hours, time.Minutes, time.Seconds, time.Milliseconds); // запись времени как строки
+
+                                string s = $"{formattedTime},{device.Description},"; // в этой переменной хранится строка, которая будет выводиться в поле вывода. Первый параметр - время, в которое пакет был обнаружен, второй параметр - с каким устройством связан этот пакет
+                                int s_Length = s.Length; // запись длины s
+                                Connection connection = new Connection(); // содержит информацию о соединении в более удобном виде
+
+                                string packet_ToString = packet.ToString(); // превращение информации о пакете в строку
+                                packet_ToString = packet_ToString.Replace("[", ""); // убирает [ из данных о пакете
+                                packet_ToString = packet_ToString.Replace("]", ""); // убирает ] из данных о пакете
+                                packet_ToString = packet_ToString.Replace(",", ""); // убирает , из данных о пакете
+
+                                foreach (string pair in packet_ToString.Split(' ')) // получение пар ключ->значение
                                 {
-                                    switch (splittedPair[0]) { // проверяет, что пара содержит полезные данные и соотетственная подстановка в connection если это так
-                                        case "SourceAddress":
-                                            connection.SourceAddress = splittedPair[1];
-                                            break;
-                                        case "DestinationAddress":
-                                            connection.DestinationAddress = splittedPair[1];
-                                            break;
-                                        case "Protocol":
-                                            connection.Protocol = splittedPair[1];
-                                            break;
-                                        case "SourcePort":
-                                            connection.SourcePort = splittedPair[1];
-                                            break;
-                                        case "DestinationPort":
-                                            connection.DestinationPort = splittedPair[1];
-                                            break;
+                                    string[] splittedPair = pair.Split('='); // разделение пары на ключ->значение
+                                    if (splittedPair.Length == 2 && allowedParameters.Contains(splittedPair[0])) // проверяет, что можно получить ключ->значение и что ключ входит в список тех ключей которые требуются
+                                    {
+                                        switch (splittedPair[0])
+                                        { // проверяет, что пара содержит полезные данные и соотетственная подстановка в connection если это так
+                                            case "SourceAddress":
+                                                connection.SourceAddress = splittedPair[1];
+                                                break;
+                                            case "DestinationAddress":
+                                                connection.DestinationAddress = splittedPair[1];
+                                                break;
+                                            case "Protocol":
+                                                connection.Protocol = splittedPair[1];
+                                                break;
+                                            case "SourcePort":
+                                                connection.SourcePort = splittedPair[1];
+                                                break;
+                                            case "DestinationPort":
+                                                connection.DestinationPort = splittedPair[1];
+                                                break;
+                                        }
+                                        s += $"{splittedPair[0]}={splittedPair[1]},"; // отправляет в переменную новую пару ключ->значение
                                     }
-                                    s += $"{splittedPair[0]}={splittedPair[1]},"; // отправляет в переменную новую пару ключ->значение
                                 }
-                            }
+                            
 
-                            if (s.Length == s_Length) // проверка если у пакета нет обычной информации по типу адреса получателя
-                            {
-                                s += "L2,"; // в таком случае указывается, что это L2 соединение
-                            }
-                            if (connection.SourceAddress != null) // проверка если это соединение, ожидаемое не от проверяемого приложения
-                            {
-                                if (listOfIgnoredSourceAddress.Contains(connection.SourceAddress) ||
-                                listOfIgnoredDestinationAddress.Contains(connection.DestinationAddress) ||
-                                connection.SourcePort != null && listOfIgnoredSourcePorts.Contains(connection.SourcePort) ||
-                                connection.DestinationPort != null && listOfIgnoredDestinationPorts.Contains(connection.DestinationPort)
-                                ) // проверка по списку портов и адресов
+                                if (s.Length == s_Length) // проверка если у пакета нет обычной информации по типу адреса получателя
                                 {
-                                    goto EX; // пропуск пакета
+                                    s += "L2,"; // в таком случае указывается, что это L2 соединение
                                 }
-                            }
+                                if (connection.SourceAddress != null) // проверка если это соединение, ожидаемое не от проверяемого приложения
+                                {
+                                    if (listOfIgnoredSourceAddress.Contains(connection.SourceAddress) ||
+                                    listOfIgnoredDestinationAddress.Contains(connection.DestinationAddress) ||
+                                    connection.SourcePort != null && listOfIgnoredSourcePorts.Contains(connection.SourcePort) ||
+                                    connection.DestinationPort != null && listOfIgnoredDestinationPorts.Contains(connection.DestinationPort)
+                                    ) // проверка по списку портов и адресов
+                                    {
+                                        goto EX; // пропуск пакета
+                                    }
+                                }
 
 
-                            s += $"Bytes={dataCopy.Length}"; // запись в переменную того, сколько байт было передано
-                            AppendOutputSafe(s); // отправка строки в поле вывода
-                        EX: // метка для пропуска пакета 
-                            { }
+                                s += $"Bytes={dataCopy.Length}"; // запись в переменную того, сколько байт было передано
+                                AppendOutputSafe(s); // отправка строки в поле вывода
+                            EX: // метка для пропуска пакета 
+                                { }
+                            });
                         };
 
                         device.Open(DeviceModes.Promiscuous, (int)numericUpDownInterval_SMA.Value); // Открывает устройство
