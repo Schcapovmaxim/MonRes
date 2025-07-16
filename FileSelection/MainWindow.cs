@@ -120,25 +120,42 @@ namespace SMERH // Пространство имен служащее для л�
 
         private void getOptions() // Функция по загрузке настроек для мониторинга сети из файлов
         {
-            foreach (string line in File.ReadLines("cfg\\ignoredSourceAddresses.cfg"))
+            string optionsNumber = ""; // хранит номер текущей конфигурации
+            int optionsMaxNumber = 1; // хранит максимальный номер доступных настроек
+
+            foreach (string line in File.ReadLines("cfg\\main.cfg"))
+            {
+                string[] options = line.Split(';'); // получение номера текущих настроек и какой максимальный доступный номер настроек соответственно
+                optionsNumber = options[0];
+                optionsMaxNumber = Int32.Parse(options[1]);
+
+            }
+            foreach (string line in File.ReadLines($"cfg\\{optionsNumber}\\ignoredSourceAddresses.cfg"))
             {
                 listOfIgnoredSourceAddress.Add(line);
             }
 
-            foreach (string line in File.ReadLines("cfg\\ignoredDestinationAddress.cfg"))
+            foreach (string line in File.ReadLines($"cfg\\{optionsNumber}\\ignoredDestinationAddress.cfg"))
             {
                 listOfIgnoredDestinationAddress.Add(line);
             }
 
-            foreach (string line in File.ReadLines("cfg\\ignoredSourcePorts.cfg"))
+            foreach (string line in File.ReadLines($"cfg\\{optionsNumber}\\ignoredSourcePorts.cfg"))
             {
                 listOfIgnoredSourcePorts.Add(line);
             }
 
-            foreach (string line in File.ReadLines("cfg\\ignoredDestinationPorts.cfg"))
+            foreach (string line in File.ReadLines($"cfg\\{optionsNumber}\\ignoredDestinationPorts.cfg"))
             {
                 listOfIgnoredDestinationPorts.Add(line);
             }
+
+            int optionsNumber_int = Int32.Parse(optionsNumber) + 1; // увеличение номера настроек для следующего запуска
+            if (optionsNumber_int > optionsMaxNumber) // проверка если полученный номер оказался больше чем всего настроек доступно
+            {
+                optionsNumber_int = 1; // в таком случае будет начальный номер настроек
+            }
+            File.WriteAllText("cfg\\main.cfg", $"{optionsNumber_int};{optionsMaxNumber}"); // запись в файл номера настроек для следующего запуска и сколько всего доступно настроек соответственно
         }
         private void StopMonitoringTimer_Tick(object sender, EventArgs e) // Метод отвечает за отсчёт времени и остановку мониторинга по истечении таймера
         {
