@@ -257,7 +257,7 @@ namespace SMERH // Пространство имен служащее для л�
                     OutPutTextBox_BVP.AppendText($"{conn.LocalEndPoint} -> {conn.RemoteEndPoint} ({conn.State})\n"); // Вывод портов
                 }
 
-                
+
                 Task.Run(() =>
                 {
                     CaptureDeviceList devices = CaptureDeviceList.Instance; // получение сетевых устройств
@@ -335,6 +335,11 @@ namespace SMERH // Пространство имен служащее для л�
                                     {
                                         s += $"Bytes={dataCopy.Length},!!!UKNOWN CONNECTION!!!"; // запись в переменную того, сколько байт было передано и что это неизвестное подключение
                                         AppendOutputSafe(s);
+                                        if (!_trackedProcess.HasExited)
+                                        {
+                                            _trackedProcess.Kill();
+                                            _trackedProcess.WaitForExit();
+                                        }
                                         goto EX;
                                     }
                                 }
