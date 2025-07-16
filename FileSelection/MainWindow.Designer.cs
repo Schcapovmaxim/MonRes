@@ -131,24 +131,6 @@
             this.lblStatus.Size = new System.Drawing.Size(0, 13);
             this.lblStatus.TabIndex = 3;
             // 
-            // checkedListBoxfunction
-            // 
-            this.checkedListBoxfunction.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.checkedListBoxfunction.FormattingEnabled = true;
-            this.checkedListBoxfunction.Items.AddRange(new object[] {
-            "Сетевая активность",
-            "Файловая активность",
-            "Процессы",
-            "Нагрузка"});
-            this.checkedListBoxfunction.Location = new System.Drawing.Point(10, 203);
-            this.checkedListBoxfunction.Margin = new System.Windows.Forms.Padding(2);
-            this.checkedListBoxfunction.Name = "checkedListBoxfunction";
-            this.checkedListBoxfunction.SelectionMode = System.Windows.Forms.SelectionMode.None;
-            this.checkedListBoxfunction.Size = new System.Drawing.Size(155, 60);
-            this.checkedListBoxfunction.TabIndex = 5;
-            this.checkedListBoxfunction.SelectedIndexChanged += new System.EventHandler(this.checkedListBoxfunction_SelectedIndexChanged);
-            this.checkedListBoxfunction.MouseUp += new System.Windows.Forms.MouseEventHandler(this.checkedListBoxfunction_DIA_MouseUp);
-            // 
             // OutPutTextBox_BVP
             // 
             this.OutPutTextBox_BVP.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
