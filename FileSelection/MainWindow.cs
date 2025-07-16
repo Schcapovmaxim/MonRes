@@ -51,7 +51,8 @@
     
     }
 }*/
-
+using SharpPcap;
+using SharpPcap.LibPcap;
 using System; // Стандартное пространство имён и функции .NET(Console,String,Array,Math),обработка исключений
 using System.Collections.Generic; // Работа с коллекциями(список,очередь,стек,cловарь)
 using System.ComponentModel; // Улучшение дизайна форм
@@ -70,9 +71,14 @@ using System.Management; // Запросы к системной информа�
 using SMERH.Core;
 using SMERH.Data;
 using FileSelection; // для использования других форм
+using System.Net;
+using System.Net.Sockets;
+using System.Runtime.InteropServices;
+using PacketDotNet;
+using System.Text.RegularExpressions;
 
 namespace SMERH // Пространство имен служащее для логической группировки связанных классов всего приложения в данном случае
-{
+{    
     public partial class MainWindow_SMA : MetroForm // Объявление класса, окно приложения
     {
         private Process _trackedProcess; // Хранит ссылку на процесс за которым ведётся мониторинг
@@ -85,11 +91,26 @@ namespace SMERH // Пространство имен служащее для л�
         private int _remainingSeconds; // Счетчик секунд
         private OptionsCheckedListBoxForm optionsCheckedListBoxForm; // Хранит информацию о форме Checkbox
         private string[] selectedCheckBoxes; // Хранит информацию о выбранных чекбоксах у формы Checkbox
+        private List<string> allowedParameters = new List<string> { // список параметров (ключей), которые требуется забрать из пакета (вместе со значениями)
+            "SourceAddress",
+            "DestinationAddress",
+            "Protocol",
+            "SourcePort",
+            "DestinationPort"
+        };
+        private List<string> listOfIgnoredSourceAddress = new List<string> { }; // список игнорируемых ip отправителя
 
+        private List<string> listOfIgnoredDestinationAddress = new List<string> { }; // список игнорируемых ip получателя
+
+        private List<string> listOfIgnoredSourcePorts = new List<string> { }; // список игнорируемых портов отправителя
+
+        private List<string> listOfIgnoredDestinationPorts = new List<string> { }; // список игнорируемых портов получателя
+
+        private Dictionary<(string, string, string, string, string), bool> listOfAwaitedConnections = new Dictionary<(string, string, string, string, string), bool>(); // словарь ожидаемых подключений
         public MainWindow_SMA() // Конструктор класса для инциализации начального состояния
         {
             InitializeComponent(); // Инициализирует все компоненты формы
-
+            getOptions(); // Загрузить настройки для мониторинга сети
             _monitorTimer = new Timer {Interval = (int)numericUpDownInterval_SMA.Value }; // Создаёт переменную таймер с заданным интервалом 
             _monitorTimer.Tick += (s, e) => UpdateMonitoring(); // Подписывает на событие Tick таймера лямбда-выражение, которое вызывает метод UpdateMonitoring()
 
@@ -101,6 +122,51 @@ namespace SMERH // Пространство имен служащее для л�
 
         
 
+        private void getOptions() // Функция по загрузке настроек для мониторинга сети из файлов
+        {
+            string optionsNumber = ""; // хранит номер текущей конфигурации
+            int optionsMaxNumber = 1; // хранит максимальный номер доступных настроек
+
+            foreach (string line in File.ReadLines("cfg\\main.cfg"))
+            {
+                string[] options = line.Split(';'); // получение номера текущих настроек и какой максимальный доступный номер настроек соответственно
+                optionsNumber = options[0];
+                optionsMaxNumber = Int32.Parse(options[1]);
+
+            }
+            foreach (string line in File.ReadLines($"cfg\\{optionsNumber}\\ignoredSourceAddresses.cfg"))
+            {
+                listOfIgnoredSourceAddress.Add(line);
+            }
+
+            foreach (string line in File.ReadLines($"cfg\\{optionsNumber}\\ignoredDestinationAddress.cfg"))
+            {
+                listOfIgnoredDestinationAddress.Add(line);
+            }
+
+            foreach (string line in File.ReadLines($"cfg\\{optionsNumber}\\ignoredSourcePorts.cfg"))
+            {
+                listOfIgnoredSourcePorts.Add(line);
+            }
+
+            foreach (string line in File.ReadLines($"cfg\\{optionsNumber}\\ignoredDestinationPorts.cfg"))
+            {
+                listOfIgnoredDestinationPorts.Add(line);
+            }
+
+            foreach (string line in File.ReadLines($"cfg\\awaitedConnetions.cfg")) // получение ожидаемых подключений (адреса, порты, протокол)
+            {
+                string[] line_Splitted = line.Split(','); // разбиение строки на отдельные слова используя запятую как разделитель
+                listOfAwaitedConnections.Add((line_Splitted[0], line_Splitted[1], line_Splitted[2], line_Splitted[3], line_Splitted[4]), true); // запись в словарь подключения
+            }
+
+            int optionsNumber_int = Int32.Parse(optionsNumber) + 1; // увеличение номера настроек для следующего запуска
+            if (optionsNumber_int > optionsMaxNumber) // проверка если полученный номер оказался больше чем всего настроек доступно
+            {
+                optionsNumber_int = 1; // в таком случае будет начальный номер настроек
+            }
+            File.WriteAllText("cfg\\main.cfg", $"{optionsNumber_int};{optionsMaxNumber}"); // запись в файл номера настроек для следующего запуска и сколько всего доступно настроек соответственно
+        }
         private void StopMonitoringTimer_Tick(object sender, EventArgs e) // Метод отвечает за отсчёт времени и остановку мониторинга по истечении таймера
         {
             _remainingSeconds--; // Уменьшаем значение таймера на 1 каждую секунду
@@ -193,10 +259,126 @@ namespace SMERH // Пространство имен служащее для л�
                 {
                     OutPutTextBox_BVP.AppendText($"{conn.LocalEndPoint} -> {conn.RemoteEndPoint} ({conn.State})\n"); // Вывод портов
                 }
+
+
+                Task.Run(() =>
+                {
+                    CaptureDeviceList devices = CaptureDeviceList.Instance; // получение сетевых устройств
+                    foreach (ICaptureDevice device in devices) //проход по всем сетевым устройствам
+                    {
+                        device.OnPacketArrival += (sender, e) => // событие при появлении нового пакета
+                        {
+                            var raw = e.GetPacket(); // получение ссылки на информацию о пакете
+                            var dataCopy = raw.Data.ToArray(); // сохранение информации о пакете
+                            var packet = Packet.ParsePacket(raw.LinkLayerType, dataCopy); // преобразует информацию о пакете в читательный вид; первый параметр указывает как эту информацию "читать"
+                            Task.Run(() => // Обработка пакета в отдельном потоке
+                            {
+                                long microSeconds = (long)(raw.Timeval.Seconds * 1_000_000L + raw.Timeval.MicroSeconds); // получение микросекунды в которую отслеживается пакет
+                                TimeSpan time = TimeSpan.FromMilliseconds(microSeconds / 1000.0); // получение более понятной информацию о времени изучения пакета - день, месяц там, а не сколько миллисекунд с нулевой даты прошло
+                                string formattedTime = string.Format("{0:D2}:{1:D2}:{2:D2}.{3:D3}", time.Hours, time.Minutes, time.Seconds, time.Milliseconds); // запись времени как строки
+
+                                string s = $"{formattedTime},{device.Description},"; // в этой переменной хранится строка, которая будет выводиться в поле вывода. Первый параметр - время, в которое пакет был обнаружен, второй параметр - с каким устройством связан этот пакет
+                                int s_Length = s.Length; // запись длины s
+                                Connection connection = new Connection(); // содержит информацию о соединении в более удобном виде
+
+                                string packet_ToString = packet.ToString(); // превращение информации о пакете в строку
+                                packet_ToString = packet_ToString.Replace("[", ""); // убирает [ из данных о пакете
+                                packet_ToString = packet_ToString.Replace("]", ""); // убирает ] из данных о пакете
+                                packet_ToString = packet_ToString.Replace(",", ""); // убирает , из данных о пакете
+
+                                foreach (string pair in packet_ToString.Split(' ')) // получение пар ключ->значение
+                                {
+                                    string[] splittedPair = pair.Split('='); // разделение пары на ключ->значение
+                                    if (splittedPair.Length == 2 && allowedParameters.Contains(splittedPair[0])) // проверяет, что можно получить ключ->значение и что ключ входит в список тех ключей которые требуются
+                                    {
+                                        switch (splittedPair[0])
+                                        { // проверяет, что пара содержит полезные данные и соотетственная подстановка в connection если это так
+                                            case "SourceAddress":
+                                                connection.SourceAddress = splittedPair[1];
+                                                break;
+                                            case "DestinationAddress":
+                                                connection.DestinationAddress = splittedPair[1];
+                                                break;
+                                            case "Protocol":
+                                                connection.Protocol = splittedPair[1];
+                                                break;
+                                            case "SourcePort":
+                                                connection.SourcePort = splittedPair[1];
+                                                break;
+                                            case "DestinationPort":
+                                                connection.DestinationPort = splittedPair[1];
+                                                break;
+                                        }
+                                        s += $"{splittedPair[0]}={splittedPair[1]},"; // отправляет в переменную новую пару ключ->значение
+                                    }
+                                }
+                            
+
+                                if (s.Length == s_Length) // проверка если у пакета нет обычной информации по типу адреса получателя
+                                {
+                                    s += "L2,"; // в таком случае указывается, что это L2 соединение
+                                }
+
+                                if (connection.SourceAddress != null) // проверка 
+                                {
+                                    if (listOfIgnoredSourceAddress.Contains(connection.SourceAddress) || // проверка если это соединение, ожидаемое не от проверяемого приложения по списку портов и адресов
+                                    listOfIgnoredDestinationAddress.Contains(connection.DestinationAddress) ||
+                                    connection.SourcePort != null && listOfIgnoredSourcePorts.Contains(connection.SourcePort) ||
+                                    connection.DestinationPort != null && listOfIgnoredDestinationPorts.Contains(connection.DestinationPort)
+                                    )
+                                    {
+                                        goto EX; // пропуск пакета
+                                    }
+
+                                    if (!listOfAwaitedConnections.ContainsKey((connection.SourceAddress, // проверка если это неожиданное соединение от проверяемого приложения
+                                    connection.SourcePort,
+                                    connection.DestinationAddress,
+                                    connection.DestinationPort,
+                                    connection.Protocol)))
+                                    {
+                                        s += $"Bytes={dataCopy.Length},!!!UKNOWN CONNECTION!!!"; // запись в переменную того, сколько байт было передано и что это неизвестное подключение
+                                        AppendOutputSafe(s);
+                                        if (!_trackedProcess.HasExited)
+                                        {
+                                            _trackedProcess.Kill();
+                                            _trackedProcess.WaitForExit();
+                                        }
+                                        goto EX;
+                                    }
+                                }
+
+                                s += $"Bytes={dataCopy.Length}"; // запись в переменную того, сколько байт было передано
+                                AppendOutputSafe(s); // отправка строки в поле вывода
+                            EX: // метка для пропуска пакета 
+                                { }
+                            });
+                        };
+
+                        device.Open(DeviceModes.Promiscuous, (int)numericUpDownInterval_SMA.Value); // Открывает устройство
+                        device.StartCapture(); // Запускает захват
+                    }
+                });
             }
             catch (Exception ex)
             {
                 OutPutTextBox_BVP.AppendText($"Ошибка: {ex.Message}\r\n"); // Обработка ошибок
+            }
+        }
+
+        private void AppendOutputSafe(string text)
+        {
+            if (OutPutTextBox_BVP.InvokeRequired)
+            {
+                // Мы не в UI-потоке → вызываем через Invoke
+                OutPutTextBox_BVP.Invoke(new Action(() =>
+                {
+                    OutPutTextBox_BVP.AppendText(text + "\r\n");
+                }));
+            }
+            else
+            {
+                // Уже в UI-потоке → можно безопасно обращаться к контролу
+                OutPutTextBox_BVP.AppendText(text + "\r\n");
             }
         }
 
@@ -335,20 +517,18 @@ namespace SMERH // Пространство имен служащее для л�
             ButtonStartTimer_SMA.Enabled = false; // ликвидация визуального бага и лагов
             if (!StartProcessCheck()) // Вызываем метод, проверяющий запущен ли процеес 
             {
-                ButtonStartTimer_SMA.Enabled = true; // Активация возомжности запуска таймера
                 return; // Останавливаем метод ButtonStartTimer_SMA_Click(), если не запущен процесс
             }
 
             if (!ChoiceMonCheck()) // Вызываем метод, проверяющий сделан ли выбор мониторинга 
             {
-                ButtonStartTimer_SMA.Enabled = true; // Активация возомжности запуска таймера
                 return; // Останавливаем метод ButtonStartTimer_SMA_Click(), если чекбоксы не стоят  
             }
             metroButtonOptions_DIA.Enabled = false; // Диактивация возможности выбрать мониторинг
             MonitoringDurationNumeric_SMA.Enabled = false; // Диактивация возможности менять таймер
             numericUpDownInterval_SMA.Enabled = false; // Диактивация возможности менять интервал
             buttonChoiceFile.Enabled = false; // Диактивация выбора файла
-            
+            UpdateMonitoring(); // Обновляем мониторинг
 
 
             _remainingSeconds = (int)MonitoringDurationNumeric_SMA.Value; // Автоматическая установка таймера мониторинга
@@ -380,7 +560,6 @@ namespace SMERH // Пространство имен служащее для л�
                     MonitoringDurationNumeric_SMA.Enabled = true; // Активация возможности менять таймер
                     numericUpDownInterval_SMA.Enabled = true; // Активация возможности менять интервал
                     buttonChoiceFile.Enabled = true; // Активация выбора файла
-                    ButtonStartTimer_SMA.Enabled = true; // Активация возомжности запуска таймера
                     // 1. Остановка всех таймеров
                     _monitorTimer?.Stop();
                     _stopMonitoringTimer?.Stop();
@@ -444,5 +623,13 @@ namespace SMERH // Пространство имен служащее для л�
             switchEnabledOption(this, false); // деактивация объектов основной формы
             optionsCheckedListBoxForm.Show(this); // открытие формы Checkbox
         }
+    }
+    public class Connection // Содержит информацию о соединении
+    {
+        public string SourceAddress; // Адрес отправителя
+        public string SourcePort; // Порт отправителя
+        public string DestinationAddress; // Адрес получателя
+        public string DestinationPort; // Порт получателя
+        public string Protocol; // Протокол
     }
 }
