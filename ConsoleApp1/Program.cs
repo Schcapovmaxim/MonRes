@@ -2,18 +2,22 @@
 using System.Collections.Generic; // Используется для HashSet — коллекции уникальных значений
 using System.Diagnostics; // Позволяет работать с процессами (Process)
 using System.Runtime.InteropServices; // Для взаимодействия с WinAPI
-using System.Timers; // Таймер, вызывающий функцию по времени
 using SMERH.Data;
-class Program
+
+public class Program
 {
-    static void Main(int[] args) 
+    public static void Main(string[] args)
     {
-        DataService cs = new DataService();
-        int pid = int.Parse( Console.ReadLine());
+        Console.Write("Введите PID процесса: ");
+        int pid = int.Parse(Console.ReadLine());
 
+        var processes = DataService.GetAllDescendantProcesses(pid);
 
-        Console.WriteLine(cs.GetAllDescendantProcesses(pid));
-
+        Console.WriteLine($"Найдено дочерних процессов: {processes.Count}");
+        foreach (var (childPid, name) in processes)
+        {
+            Console.WriteLine($"🧒 {name} (PID: {childPid})");
+        }
     }
-
 }
+

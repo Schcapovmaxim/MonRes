@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMERH.Core", "SMERH.Core\SM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMERH.Data", "SMERH.Data\SMERH.Data.csproj", "{74A0031C-E39B-4F66-B7BF-8A85100569C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{74E23290-720A-458B-941B-C7979DC93126}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "ConsoleApp1\ConsoleApp.csproj", "{74E23290-720A-458B-941B-C7979DC93126}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

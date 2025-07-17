@@ -12,7 +12,7 @@ namespace SMERH.Data
     {
 
         // Основной метод: возвращает всех потомков указанного PID
-        public List<(int Pid, string Name)> GetAllDescendantProcesses(int rootPid)
+        public static List<(int Pid, string Name)> GetAllDescendantProcesses(int rootPid)
         {
             var descendants = new List<(int, string)>();
             var known = new HashSet<int>();        // уже добавленные
