@@ -11,7 +11,7 @@ public class Program
         Console.Write("Введите PID процесса: ");
         int pid = int.Parse(Console.ReadLine());
 
-        var processes = DataService.GetAllDescendantProcesses(pid);
+        var processes = DataService.GetAllDescendantProcesses(pid);//вот здесь применяется метод йоу
 
         Console.WriteLine($"Найдено дочерних процессов: {processes.Count}");
         foreach (var (childPid, name) in processes)
