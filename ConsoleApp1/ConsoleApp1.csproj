@@ -12,7 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FileSelection\SMERH.UI.csproj" />
     <ProjectReference Include="..\SMERH.Core\SMERH.Core.csproj" />
+    <ProjectReference Include="..\SMERH.Data\SMERH.Data.csproj" />
   </ItemGroup>
 
 </Project>

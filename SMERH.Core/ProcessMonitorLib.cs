@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SMERH.Data
+namespace ProcessMonitorLib
 {
-    public class DataService
+    public static class DataService
     {
-
         // Основной метод: возвращает всех потомков указанного PID
-        public List<(int Pid, string Name)> GetAllDescendantProcesses(int rootPid)
+        public static List<(int Pid, string Name)> GetAllDescendantProcesses(int rootPid)
         {
             var descendants = new List<(int, string)>();
             var known = new HashSet<int>();        // уже добавленные
@@ -102,5 +98,4 @@ namespace SMERH.Data
             QueryInformation = 0x400
         }
     }
-
 }
