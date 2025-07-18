@@ -22,8 +22,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ResourceMonitorLib\ResourceMonitorLib.csproj" />
-    <ProjectReference Include="..\SMERH.Core\SMERH.Core.csproj" />
     <ProjectReference Include="..\SMERH.Data\SMERH.Data.csproj" />
+    <ProjectReference Include="..\SMERH.MainCore\SMERH.MainCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>

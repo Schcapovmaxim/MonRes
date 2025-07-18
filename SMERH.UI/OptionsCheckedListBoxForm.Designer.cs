@@ -36,19 +36,19 @@
             checkedListBoxfunction.Dock = DockStyle.Fill;
             checkedListBoxfunction.FormattingEnabled = true;
             checkedListBoxfunction.IntegralHeight = false;
-            checkedListBoxfunction.Items.AddRange(new object[] { "Сетевая активность", "Файловая активность", "Процессы", "Нагрузка" });
+            checkedListBoxfunction.Items.AddRange(new object[] { "Сетевая активность", "Файловая активность", "Процессы", "Нагрузка", "Поиск дочерних процессов" });
             checkedListBoxfunction.Location = new Point(0, 0);
             checkedListBoxfunction.Margin = new Padding(0);
             checkedListBoxfunction.Name = "checkedListBoxfunction";
             checkedListBoxfunction.SelectionMode = SelectionMode.None;
-            checkedListBoxfunction.Size = new Size(145, 76);
+            checkedListBoxfunction.Size = new Size(254, 208);
             checkedListBoxfunction.TabIndex = 0;
             checkedListBoxfunction.MouseUp += checkedListBoxfunction_MouseUp;
             // 
             // OptionsCheckedListBoxForm
             // 
             AutoScaleMode = AutoScaleMode.None;
-            ClientSize = new Size(145, 76);
+            ClientSize = new Size(254, 208);
             Controls.Add(checkedListBoxfunction);
             FormBorderStyle = FormBorderStyle.None;
             Name = "OptionsCheckedListBoxForm";

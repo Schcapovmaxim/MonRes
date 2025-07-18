@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -9,12 +8,13 @@ using System.Threading.Tasks;
 using SMERH.Data;
 using System.Management; // Для WMI
 
-namespace SMERH.Core
+namespace SMERH.MainCore
 {
-    public class CoreService  //SMERH.Core
+    public class MainCoreService  //SMERH.Core
     {
-        public static List<(string name, string pid, string parent_pid)> getProcessesTree(string targetPID, int time)
+        public static async Task<List<(string name, string pid, string parent_pid)>> getProcessesTree(string targetPID, int time)
         {
+            
             List<(string name, string pid, string parent_pid)> listOfProcesses = new List<(string name, string pid, string parent_pid)>();
             // Создаем запрос WMI, отслеживающий запуск новых процессов
             // "SELECT * FROM __InstanceCreationEvent" означает: событие создания экземпляра
@@ -27,44 +27,36 @@ namespace SMERH.Core
             CancellationTokenSource cts = new CancellationTokenSource();
 
             // Устанавливаем обработчик события
-            watcher.EventArrived += (sender, e) =>
-            {
-                ManagementBaseObject process = (ManagementBaseObject)e.NewEvent["TargetInstance"];
-
-                // Извлекаем PID, имя и родительский PID
-                string name = process["Name"]?.ToString();
-                string pid = process["ProcessId"]?.ToString();
-                string parentPid = process["ParentProcessId"]?.ToString();
-
-                if (parentPid != null && parentPid == targetPID)
-                {
-                    listOfProcesses.Add((name, pid, parentPid));
-                }
-            };
-
-            // Запускаем слежение
-            watcher.Start();
-
-            Task.Run(async () =>
-            {
-                await Task.Delay(time);
-                cts.Cancel();  // Отменяем токен, сигнализируя об окончании времени
-                watcher.Stop(); // Останавливаем watcher
-            });
-
             try
             {
-                cts.Token.WaitHandle.WaitOne(); // Блокируем поток, пока не произойдет отмена.
+                watcher.EventArrived += (sender, e) =>
+                {
+                    ManagementBaseObject process = (ManagementBaseObject)e.NewEvent["TargetInstance"];
+
+                    // Извлекаем PID, имя и родительский PID
+                    string name = process["Name"]?.ToString();
+                    string pid = process["ProcessId"]?.ToString();
+                    string parentPid = process["ParentProcessId"]?.ToString();
+
+                    if (parentPid != null && parentPid == targetPID)
+                    {
+                        listOfProcesses.Add((name, pid, parentPid));
+                    }
+                };
+
+                // Запускаем слежение
+                watcher.Start();
+                await Task.Delay(time, cts.Token);
             }
-            catch (OperationCanceledException)
+            finally
             {
-                // Игнорируем.  Это ожидаемое исключение при отмене токена.
+                watcher.Stop();
+                watcher.Dispose();
             }
 
             return listOfProcesses;
         }
     }
-    
     public class ResourceMonitor
     {
         private readonly PerformanceCounter _cpuCounter;
@@ -158,6 +150,7 @@ namespace SMERH.Core
 
             return slope > 10.0f;
         }
+
     }
 
     public class MonitoringResult
