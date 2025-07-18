@@ -67,7 +67,7 @@ using System.Threading.Tasks; // Ассинхронное программиро
 using System.Windows.Forms; // Основное контролы(form,button,Textbox,Timer) и управление "жизнью" интерфейса
 using MetroFramework.Forms; // Стилизация интерфейса с красивыми плоскими формами
 using Microsoft.VisualBasic.Devices; // Вспомогатлеьные классы данные о системе (оперативная память)
-using System.Management; // Запросы к системной информации (процессы, диски)
+//using System.Management; // Запросы к системной информации (процессы, диски)
 using SMERH.Core; // Библиотека с основными методами
 using SMERH.Data; // Библиотека с методами обработки данных
 using FileSelection; // для использования других форм
@@ -86,8 +86,8 @@ namespace SMERH // Пространство имен служащее для л�
         private PerformanceCounter _ramCounter; // Собирает использование оперативной памяти в байтах
         private PerformanceCounter _ioReadCounter; // Отслеживает скрость чтения с диска (байт/сек)
         private PerformanceCounter _ioWriteCounter; // Отслеживает скрость записи на диск (байт/сек)
-        private Timer _monitorTimer; // Таймер для переодического обновления метрик
-        private Timer _stopMonitoringTimer; // Таймер для автоматической остановки мониторинга через заданное время
+        private System.Windows.Forms.Timer _monitorTimer; // Таймер для переодического обновления метрик
+        private System.Windows.Forms.Timer _stopMonitoringTimer; // Таймер для автоматической остановки мониторинга через заданное время
         private int _remainingSeconds; // Счетчик секунд
         private OptionsCheckedListBoxForm optionsCheckedListBoxForm; // Хранит информацию о форме Checkbox
         private string[] selectedCheckBoxes; // Хранит информацию о выбранных чекбоксах у формы Checkbox
@@ -111,10 +111,10 @@ namespace SMERH // Пространство имен служащее для л�
         {
             InitializeComponent(); // Инициализирует все компоненты формы
             getOptions(); // Загрузить настройки для мониторинга сети
-            _monitorTimer = new Timer {Interval = (int)numericUpDownInterval_SMA.Value }; // Создаёт переменную таймер с заданным интервалом 
+            _monitorTimer = new System.Windows.Forms.Timer { Interval = (int)numericUpDownInterval_SMA.Value }; // Создаёт переменную таймер с заданным интервалом 
             _monitorTimer.Tick += (s, e) => UpdateMonitoring(); // Подписывает на событие Tick таймера лямбда-выражение, которое вызывает метод UpdateMonitoring()
 
-            _stopMonitoringTimer = new Timer { Interval = 1000 }; // Второй таймер с интервалом 1 секунда для обратного отсчёта
+            _stopMonitoringTimer = new System.Windows.Forms.Timer { Interval = 1000 }; // Второй таймер с интервалом 1 секунда для обратного отсчёта
             _stopMonitoringTimer.Tick += StopMonitoringTimer_Tick; // Подписывает на событие Tick метод StopMonitoringTimer_Tick который уменьшает таймера и останавливает при достижении нуля
         }
 
@@ -237,9 +237,6 @@ namespace SMERH // Пространство имен служащее для л�
                         break;
                     case "Нагрузка":
                         ShowSystemLoad(); // Мониторинг RAM и CPU
-                        break;
-                    case "Утечка памяти":
-                        ShowMemoryLeakDetection();
                         break;
                 }
                 OutPutTextBox_BVP.AppendText(Environment.NewLine); // Вывод результата
@@ -445,14 +442,6 @@ namespace SMERH // Пространство имен служащее для л�
             }
         }
 
-        private void ShowMemoryLeakDetection()
-        {
-            var monitor = new ResourceMonitor(80, 80);
-            bool leakDetected = monitor.CheckForMemoryLeak(_trackedProcess.Name);
-
-
-            AppendOutputSafe(leakDetected ? "!!!Обнаружена утечка памяти!!!" : "Утечка памяти не обнаружена");
-        }
 
         private void buttonChoiceFile_Click(object sender, EventArgs e) // Метод для выбора файла для тестирования
         {
